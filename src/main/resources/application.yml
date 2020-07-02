@@ -11,6 +11,9 @@ spring:
     host: smtp.exmail.qq.com
     username: qlh@precisionmedcare.com
     password: Madison18259973869
+#    host: smtp.163.com
+#    username: qlh2561808384@163.com
+#    password: LZTUIMHSJYMJZJBY
     port: 465
     default-encoding: UTF-8
     test-connection: false
