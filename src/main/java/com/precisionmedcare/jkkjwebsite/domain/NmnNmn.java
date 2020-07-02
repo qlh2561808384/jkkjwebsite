@@ -18,5 +18,6 @@ public class NmnNmn implements Serializable {
   private String createTime;
   private long online;
   private double score;
+  private String coverImg;
 
 }

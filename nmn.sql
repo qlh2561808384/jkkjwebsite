@@ -40,6 +40,7 @@ create table nmn_nmn
     create_time datetime null comment '创建时间',
     online tinyint(1) default 0 null comment '商品：0表示未上线，1表示上线',
     score double(11,2) default 8.70 null comment '商品评分：默认8.7，最高10分',
+    cover_img varchar(524) null comment '商品封面图',
     constraint nmn_nmn_pk
         primary key (id)
 )
