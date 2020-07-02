@@ -26,7 +26,7 @@ public class SysOrderController {
     SysNmnOrderService sysNmnOrderService;
 
     @GetMapping("buy")
-    public void saveOrder(@RequestParam("userid") String userid, @RequestParam("nmnid") String nmnid, HttpServletRequest request, HttpServletResponse response) {
+    public void saveOrder(@RequestParam("userid") String userid, @RequestParam("nmnid") String nmnid, HttpServletRequest request, HttpServletResponse response) throws Exception {
         //1、根据用户id和商品id生成订单
         NmnNmnOrderVo nmnNmnOrderVo = new NmnNmnOrderVo();
         nmnNmnOrderVo.setUserId(Long.parseLong(userid));
