@@ -1,0 +1,48 @@
+#数据库配置
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/nmn?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  #email
+  mail:
+    host: smtp.exmail.qq.com
+    username: qlh@precisionmedcare.com
+    password: Madison18259973869
+    port: 465
+    default-encoding: UTF-8
+    test-connection: false
+    properties:
+      mail:
+        debug: true
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+#端口号配置
+server:
+  port: 8089
+# mybatis 控制台打印sql  把你是需要输出sql语句的包（com.precisionmedcare.jkkjwebsite.mapper）的log等级设置为debug
+logging:
+  level:
+    com.precisionmedcare.jkkjwebsite.mapper: debug
+
+mybatis:
+  configuration:
+    #mybatis 下划线转驼峰配置,两者都可以
+    #mybatis.configuration.mapUnderscoreToCamelCase=true
+    map-underscore-to-camel-case: true
+    #打印sql，方便调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#wechat
+wxpay:
+  #公众号
+  appid: wx0pi2m4x6we76140w
+  appsecret: x82552d8w0y1i161lp9o7821s5d7osry
+  #支付配置
+  #微信商户平台
+  mer_id: 5731202714
+  key: PL9wT9n9Ljav4zSN66J0bmzT1Yl54429
+  callback: http://oujiong.vipgz1.idcfengye.com/api/v1/order/callback
