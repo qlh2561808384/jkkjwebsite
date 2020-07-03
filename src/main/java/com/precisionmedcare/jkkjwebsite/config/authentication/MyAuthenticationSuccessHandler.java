@@ -3,6 +3,7 @@ package com.precisionmedcare.jkkjwebsite.config.authentication;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.precisionmedcare.jkkjwebsite.components.JwtTokenUtil;
 import com.precisionmedcare.jkkjwebsite.components.TokenCache;
+import com.precisionmedcare.jkkjwebsite.domain.NmnUser;
 import com.precisionmedcare.jkkjwebsite.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -53,10 +54,11 @@ public class MyAuthenticationSuccessHandler extends JSONAuthentication implement
             //把新的token存储到缓存中
             TokenCache.setToken(userDetails.getUsername(),token);
         }
-
+        NmnUser user = sysUserService.getUserByUserName(userDetails.getUsername());
         //
         Map<String,Object> map = new HashMap<>();
         map.put("username",userDetails.getUsername());
+        map.put("userId", user.getId());
         map.put("auth",userDetails.getAuthorities());
         map.put("token",token);
         //装入token

@@ -46,13 +46,14 @@ create table nmn_nmn
 )
     comment '商品表';
 
-create table user_details
+create table nmn_user_details
 (
     id int auto_increment comment '主键id',
     user_id int null comment '用户id',
     phone varchar(50) null comment '用户手机电话',
     email varchar(50) null comment '用户邮箱',
     idcard varchar(50) null comment '用户身份证',
+    address varchar(125) null comment '用户收获地址',
     constraint user_details_pk
         primary key (id)
 )
@@ -72,6 +73,12 @@ create table nmn_nmn_order
     user_id int null comment '用户id',
     ip varchar(64) null comment '用户ip地址',
     del tinyint(1) null comment '0表示未删除，1表示已经删除',
+    status tinyint(1) null comment 'nmn订单：0表示未发货，1表示已发货，2表示已收货',
+    payment_types tinyint(1) null comment 'nmn订单：0表示微信支付，1表示支付宝支付，2表示银行卡支付',
+    phone varchar(50) null comment '用户手机',
+    email varchar(50) null comment '用户邮箱',
+    idcard varchar(50) null comment '用户身份证',
+    address varchar(125) null comment '用户收获地址',
     constraint nmn_nmn_order_pk
         primary key (id)
 )

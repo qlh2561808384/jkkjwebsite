@@ -23,7 +23,7 @@ import java.util.Date;
 @RequestMapping("email")
 public class SysEmailController extends ApiController {
 
-    private static final long EXPIRE_TIME = 60 * 5;
+    private static final long EXPIRE_TIME = 60;
 
     @Autowired
     MailVo mailVo;

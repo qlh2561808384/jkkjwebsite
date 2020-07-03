@@ -23,5 +23,10 @@ public class NmnNmnOrder implements Serializable {
   private long userId;
   private String ip;
   private long del;
-
+  private long status;
+  private long paymentTypes;
+  private String phone;
+  private String email;
+  private String idcard;
+  private String address;
 }

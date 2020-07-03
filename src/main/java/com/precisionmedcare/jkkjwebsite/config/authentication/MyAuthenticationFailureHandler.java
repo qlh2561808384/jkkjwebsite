@@ -1,6 +1,7 @@
 package com.precisionmedcare.jkkjwebsite.config.authentication;
 
 import com.baomidou.mybatisplus.extension.api.R;
+import com.precisionmedcare.jkkjwebsite.components.CustomException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,8 @@ public class MyAuthenticationFailureHandler extends JSONAuthentication implement
                                         HttpServletResponse response,
                                         AuthenticationException e) throws IOException, ServletException {
 
-//        R<String> exception = CustomException.exception(e);
-        R<String> data = R.failed("登录失败:"+e.getMessage());
+        R<String> data = CustomException.exception(e);
+//        R<String> data = R.failed("登录失败:"+e.getMessage());
         //输出
         this.WriteJSON(request, response, data);
     }

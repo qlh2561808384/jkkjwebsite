@@ -9,12 +9,13 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetails implements Serializable {
+public class NmnUserDetails implements Serializable {
 
   private long id;
   private long userId;
   private String phone;
   private String email;
   private String idcard;
+  private String address;
 
 }
