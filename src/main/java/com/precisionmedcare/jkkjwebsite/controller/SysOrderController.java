@@ -167,7 +167,7 @@ public class SysOrderController {
             nmnNmnOrderVo.setNmnId(Long.parseLong(nmnId));
             nmnNmnOrderVo.setTotalFee(Long.parseLong(nmnTotal));
             nmnNmnOrderVo.setNmnTitle(nmnName);
-            sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
+//            sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
         }
     }
 
