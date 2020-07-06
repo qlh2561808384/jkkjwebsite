@@ -4,9 +4,11 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.precisionmedcare.jkkjwebsite.components.AliPay.AlipaySubmit;
 import com.precisionmedcare.jkkjwebsite.components.wx.CommonUtils;
 import com.precisionmedcare.jkkjwebsite.components.wx.HttpUtils;
 import com.precisionmedcare.jkkjwebsite.components.wx.WXPayUtil;
+import com.precisionmedcare.jkkjwebsite.config.AliPayConfig;
 import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmn;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
@@ -15,20 +17,21 @@ import com.precisionmedcare.jkkjwebsite.mapper.SysNmnMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnOrderMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysUserMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
+import com.precisionmedcare.jkkjwebsite.vo.GlobalAlipayVo;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNmnOrder> implements SysNmnOrderService {
 
     private static final long ALL_STATUS = 0;
     private static final long ALL_STATUS_DISABLE = 1;
+    private static final String WX_PAY_TYPE = "weChatPay";
+    private static final String ALI_PAY_TYPE = "aliPay";
 
     @Autowired
     SysNmnMapper sysNmnMapper;
@@ -38,6 +41,8 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     SysUserMapper sysUserMapper;
     @Autowired
     private WeChatConfig weChatConfig;
+    @Autowired
+    private GlobalAlipayVo globalAlipayVo;
 
 /*    @Override
     public String saveOrder(NmnNmnOrderVo nmnNmnOrderVo) throws Exception {
@@ -65,7 +70,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     }*/
 
     @Override
-    public void saveNmnWeChatOrder(NmnNmnOrderVo nmnNmnOrderVo) {
+    public void saveNmnOrder(NmnNmnOrderVo nmnNmnOrderVo) {
         //1、查找商品信息
         NmnNmn nmnNmn = sysNmnMapper.selectById(nmnNmnOrderVo.getNmnId());
         NmnUser nmnUser = null;
@@ -89,7 +94,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setIp(nmnNmnOrderVo.getIp());
         nmnNmnOrder.setDel(ALL_STATUS);
         nmnNmnOrder.setStatus(ALL_STATUS);
-        nmnNmnOrder.setPaymentTypes(ALL_STATUS);
+        if(WX_PAY_TYPE.equals(nmnNmnOrderVo.getPayType())){
+            nmnNmnOrder.setPaymentTypes(ALL_STATUS);
+        } else if (ALI_PAY_TYPE.equals(nmnNmnOrderVo.getPayType())) {
+            nmnNmnOrder.setPaymentTypes(ALL_STATUS_DISABLE);
+        }
         nmnNmnOrder.setPhone(nmnNmnOrderVo.getPhone());
         nmnNmnOrder.setEmail(nmnNmnOrderVo.getEmail());
         nmnNmnOrder.setIdcard(nmnNmnOrderVo.getIdcard());
@@ -175,5 +184,34 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         }else {
             return 0;
         }
+    }
+
+    @Override
+    public String aliPay(NmnNmnOrderVo nmnNmnOrderVo) {
+        //把请求参数打包成数组
+        //package the request parameters
+        Map<String, String> sParaTemp = new HashMap<String, String>();
+        sParaTemp.put("service", globalAlipayVo.getService());
+        sParaTemp.put("partner",AliPayConfig.partner);
+        sParaTemp.put("_input_charset", AliPayConfig.charset);
+        sParaTemp.put("notify_url", AliPayConfig.notify_url);
+        sParaTemp.put("return_url", AliPayConfig.return_url);
+        sParaTemp.put("out_trade_no", new SimpleDateFormat().format(new Date()));
+        sParaTemp.put("subject", nmnNmnOrderVo.getNmnTitle());
+        sParaTemp.put("total_fee", nmnNmnOrderVo.getTotalAmount());
+        //sParaTemp.put("rmb_fee", rmb_fee);
+        sParaTemp.put("body", "test");//body商品描述 可为空
+        sParaTemp.put("currency", "USD");//currency 币种，不可空
+        sParaTemp.put("product_code", globalAlipayVo.getProduct_code());//注意：必传，PC端是NEW_OVERSEAS_SELLER，移动端是NEW_WAP_OVERSEAS_SELLER Remarks:Mandatory.For PC: NEW_OVERSEAS_SELLER ;FOR WAP and APP: NEW_WAP_OVERSEAS_SELLER
+        //sParaTemp.put("supplier", supplier);
+        sParaTemp.put("timeout_rule", globalAlipayVo.getTimeout_rule());
+        //split_fund_info = split_fund_info.replaceAll("\"", "'");
+        //sParaTemp.put("split_fund_info", split_fund_info);
+
+//        trade_information = trade_information.replaceAll("\"", "'");
+        sParaTemp.put("trade_information", globalAlipayVo.getTrade_information().toString().replaceAll("\"", "'"));
+        String response = AlipaySubmit.buildRequest(sParaTemp, "get", "OK");
+        System.out.println(response);
+        return response;
     }
 }

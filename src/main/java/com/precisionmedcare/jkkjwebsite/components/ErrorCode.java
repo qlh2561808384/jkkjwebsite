@@ -10,6 +10,7 @@ public enum ErrorCode implements IErrorCode {
     REGISTER_EMAIL_REGISTERED(10002, "该邮箱已经被注册，不能重复。"),
     REGISTER_USER_OBJECT_IS_EMPTY(10003, "错误消息：用户对象为空！"),
     EMAIL_REDIS_ERROR(10004, "redis异常"),
+    USER_DETAIL_ALREADY_EXISTS(10005, "用户详细信息已存在"),
     ;
 
     private final long code;

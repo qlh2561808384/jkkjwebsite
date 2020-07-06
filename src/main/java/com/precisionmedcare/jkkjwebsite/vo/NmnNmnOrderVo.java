@@ -8,6 +8,17 @@ public class NmnNmnOrderVo extends NmnNmnOrder {
 
     private String totalAmount;
 
+    private String payType;
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+
     public String getTotalAmount() {
         return totalAmount;
     }

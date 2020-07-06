@@ -10,9 +10,11 @@ public interface SysNmnOrderService extends IService<NmnNmnOrder> {
 
     String weChatPay(NmnNmnOrderVo nmnNmnOrderVo) throws Exception;
 
-    void saveNmnWeChatOrder(NmnNmnOrderVo nmnNmnOrderVo);
+    void saveNmnOrder(NmnNmnOrderVo nmnNmnOrderVo);
 
     NmnNmnOrder findByOutTradeNo(String outTradeNo);
 
     int updateVideoOderByOutTradeNo(NmnNmnOrder nmnOrder);
+
+    String aliPay(NmnNmnOrderVo nmnNmnOrderVo);
 }

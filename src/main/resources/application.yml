@@ -8,12 +8,12 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   #email
   mail:
-#    host: smtp.exmail.qq.com
-#    username: qlh@precisionmedcare.com
-#    password: Madison18259973869
-    host: smtp.163.com
-    username: qlh2561808384@163.com
-    password: LZTUIMHSJYMJZJBY
+    host: smtp.exmail.qq.com
+    username: qlh@precisionmedcare.com
+    password: Madison18259973869
+#    host: smtp.163.com
+#    username: qlh2561808384@163.com
+#    password: LZTUIMHSJYMJZJBY
     port: 465
     default-encoding: UTF-8
     test-connection: false
@@ -49,3 +49,14 @@ wxpay:
   mer_id: 5731202714
   key: PL9wT9n9Ljav4zSN66J0bmzT1Yl54429
   callback: http://localhost/order/callback
+#alipay
+global:
+  alipay:
+    timeout_rule: 12h
+    service: create_forex_trade
+    product_code: NEW_OVERSEAS_SELLER
+    trade_information:
+      business_type: 1
+      hotel_name: qlh
+      check_in_time: 2020-10-20
+      check_out_time: 2020-10-22
