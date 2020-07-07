@@ -1,6 +1,10 @@
 package com.precisionmedcare.jkkjwebsite.controller;
 
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -17,6 +21,8 @@ import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +36,7 @@ import java.util.*;
 @Api(tags = "支付下单接口")
 @RestController
 @RequestMapping("order")
-public class SysOrderController {
+public class SysOrderController extends ApiController {
 
     @Autowired
     SysNmnService sysNmnService;
@@ -47,10 +53,12 @@ public class SysOrderController {
         //生成支付二维码
         generateQrCode(codeUrl, response);
     }
+
     @PostMapping("AliPay")
     public String saveWxPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return unifiedOperateMap(map, request, response);
     }
+
     /**
      * 微信支付回调
      * 该链接是通过【统一下单API】中提交的参数notify_url设置，如果链接无法访问，商户将无法接收到微信通知。
@@ -221,4 +229,12 @@ public class SysOrderController {
         }
         return codeUrl;
     }
+
+    @ApiOperation(value = "订单查询")
+    @GetMapping("queryOrder")
+    public R queryOrder(Page<NmnNmnOrder> page, @Param("keyword") String keyword) {
+        IPage<NmnNmnOrder> allUserList = sysNmnOrderService.queryOrder(page, keyword);
+        return success(allUserList);
+    }
+
 }

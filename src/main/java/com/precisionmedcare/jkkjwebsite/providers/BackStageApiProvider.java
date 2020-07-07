@@ -50,13 +50,22 @@ public class BackStageApiProvider {
     public String queryNmn(Map<String, Object> map){
         String keyword = map.get("keyword").toString();
         StringBuilder sql = new StringBuilder();
-        sql.append("select *\n" +
-                "from nmn_nmn\n" +
-                "where nmn_nmn.status = 0");
+        sql.append("select nmn.id,\n" +
+                "       nmn.status,\n" +
+                "       nmn.cover_img   coverImg,\n" +
+                "       nmn.create_time createTime,\n" +
+                "       nmn.online,\n" +
+                "       nmn.price,\n" +
+                "       nmn.score,\n" +
+                "       nmn.summary,\n" +
+                "       nmn.title,\n" +
+                "       nmn.view_num    viewNum\n" +
+                "from nmn_nmn nmn\n" +
+                "where status = 0");
         if(!"".equals(keyword)){
             sql.
-                    append(" and (nmn_nmn.title like '%)").
-                    append(keyword).append("%' or nmn_nmn.online =").
+                    append(" and (nmn.title like '%)").
+                    append(keyword).append("%' or nmn.online =").
                     append(keyword);
         }
         return sql.toString();

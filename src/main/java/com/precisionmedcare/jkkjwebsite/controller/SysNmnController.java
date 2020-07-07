@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Api(tags = "商品控制器")
 @RequestMapping("nmn")
@@ -24,18 +23,26 @@ public class SysNmnController extends ApiController {
     @Autowired
     SysNmnService sysNmnService;
 
+    @ApiOperation("商品管理-新增and修改商品表")
     @PostMapping("saveOrUpdateNmn")
     public R saveOrUpdateNmn(@RequestBody NmnNmn nmnNmn) {
         return success(sysNmnService.saveOrUpdateNmn(nmnNmn));
     }
+
     @ApiOperation(value = "商品管理-商品查询分页and条件查询")
     @GetMapping("queryNmn")
-    public R queryNmn(@RequestParam("page") int page, @RequestParam("limit") int limit, @RequestParam("keyword") String keyword){
+    public R queryNmn(@RequestParam("page") int page, @RequestParam("limit") int limit, @RequestParam("keyword") String keyword) {
         PageHelper.startPage(page, limit);
         List<HashMap<String, Object>> nmn = sysNmnService.queryNmn(keyword);
         PageInfo pageInfo = new PageInfo(nmn);
         return success(JSONUtil.createObj()
                 .putOnce("total", pageInfo.getTotal())
                 .putOnce("data", pageInfo.getList()));
+    }
+
+    @ApiOperation(value = "商品管理-删除商品")
+    @GetMapping("deleteNmn")
+    public R deleteNmn(@RequestParam("id") String id) {
+        return success(sysNmnService.deleteNmn(id));
     }
 }

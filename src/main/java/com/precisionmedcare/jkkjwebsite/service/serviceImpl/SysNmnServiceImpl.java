@@ -1,6 +1,7 @@
 package com.precisionmedcare.jkkjwebsite.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmn;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnMapper;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class SysNmnServiceImpl extends ServiceImpl<SysNmnMapper, NmnNmn> implements SysNmnService {
 
     private static final long STATUS = 0;
-    private static final long STATUS_DISABLE = 0;
+    private static final long STATUS_DISABLE = 1;
     @Override
     public boolean saveOrUpdateNmn(NmnNmn nmnNmn) {
         if (nmnNmn != null) {
@@ -33,5 +34,13 @@ public class SysNmnServiceImpl extends ServiceImpl<SysNmnMapper, NmnNmn> impleme
     @Override
     public List<HashMap<String, Object>> queryNmn(String keyword) {
         return this.baseMapper.queryNmn(keyword);
+    }
+
+    @Override
+    public boolean deleteNmn(String id) {
+        LambdaUpdateWrapper<NmnNmn> nmnNmnLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        nmnNmnLambdaUpdateWrapper.set(NmnNmn::getStatus, STATUS_DISABLE);
+        nmnNmnLambdaUpdateWrapper.eq(NmnNmn::getId, Long.parseLong(id));
+        return this.update(nmnNmnLambdaUpdateWrapper);
     }
 }

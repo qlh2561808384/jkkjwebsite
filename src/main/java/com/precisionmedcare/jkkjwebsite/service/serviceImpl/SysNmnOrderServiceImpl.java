@@ -3,6 +3,8 @@ package com.precisionmedcare.jkkjwebsite.service.serviceImpl;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.precisionmedcare.jkkjwebsite.components.AliPay.AlipaySubmit;
 import com.precisionmedcare.jkkjwebsite.components.wx.CommonUtils;
@@ -213,5 +215,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         String response = AlipaySubmit.buildRequest(sParaTemp, "get", "OK");
         System.out.println(response);
         return response;
+    }
+
+    @Override
+    public IPage<NmnNmnOrder> queryOrder(Page<NmnNmnOrder> page, String keyword) {
+
+        return null;
     }
 }

@@ -10,4 +10,6 @@ public interface SysNmnService extends IService<NmnNmn> {
     boolean saveOrUpdateNmn(NmnNmn nmnNmn);
 
     List<HashMap<String, Object>> queryNmn(String keyword);
+
+    boolean deleteNmn(String id);
 }
