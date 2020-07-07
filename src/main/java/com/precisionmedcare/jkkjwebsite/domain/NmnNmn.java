@@ -19,5 +19,6 @@ public class NmnNmn implements Serializable {
   private long online;
   private double score;
   private String coverImg;
+  private long status;
 
 }

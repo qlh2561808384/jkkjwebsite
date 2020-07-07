@@ -17,4 +17,48 @@ public class BackStageApiProvider {
                 "  and user.email = '").append(username).append("'");
         return sql.toString();
     }
+    public String queryAllUser(Map<String, Object> map){
+        String keyword = map.get("keyword").toString();
+        StringBuilder sql = new StringBuilder();
+        sql.append("select user.id userid,\n" +
+                "       user.email,\n" +
+                "       user.nickname,\n" +
+                "       user_details.email detailsEmail,\n" +
+                "       user_details.address,\n" +
+                "       user_details.idcard,\n" +
+                "       user_details.phone,\n" +
+                "       user_details.name,\n" +
+                "       user_details.id userdetailsid\n" +
+                "from nmn_user user\n" +
+                "         left join nmn_user_details user_details on user.id = user_details.user_id\n" +
+                "where user.status = 0\n" +
+                "  and user.email <> 'admin'");
+        if(!"".equals(keyword)){
+            sql.
+                    append(" and (user.email like '%").
+                    append(keyword).
+                    append("%' or user.nickname like '%").
+                    append(keyword).
+                    append("%' or user_details.email like '%").
+                    append(keyword).
+                    append("%' or user_details.phone like '%").
+                    append(keyword).
+                    append("%')");
+        }
+        return sql.toString();
+    }
+    public String queryNmn(Map<String, Object> map){
+        String keyword = map.get("keyword").toString();
+        StringBuilder sql = new StringBuilder();
+        sql.append("select *\n" +
+                "from nmn_nmn\n" +
+                "where nmn_nmn.status = 0");
+        if(!"".equals(keyword)){
+            sql.
+                    append(" and (nmn_nmn.title like '%)").
+                    append(keyword).append("%' or nmn_nmn.online =").
+                    append(keyword);
+        }
+        return sql.toString();
+    }
 }

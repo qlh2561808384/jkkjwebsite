@@ -17,5 +17,6 @@ public class NmnUserDetails implements Serializable {
   private String email;
   private String idcard;
   private String address;
+  private String name;
 
 }

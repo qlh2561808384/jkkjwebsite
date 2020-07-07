@@ -2,6 +2,7 @@ package com.precisionmedcare.jkkjwebsite.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.api.IErrorCode;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -36,5 +37,24 @@ public class SysUserDetailServiceImpl extends ServiceImpl<SysUserDetailMapper, N
             nmnUserDetails.setAddress(userDetails.get(0).getAddress());
             return R.ok(this.save(nmnUserDetails));
         }
+    }
+
+    @Override
+    public boolean addAndModifyUserDetails(NmnUserDetails nmnUserDetails) {
+        if (nmnUserDetails != null) {
+            long id = nmnUserDetails.getId();
+            if (id == 0) {
+                return this.save(nmnUserDetails);
+            }else {
+                return this.saveOrUpdate(nmnUserDetails);
+            }
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveUserDetails(LambdaUpdateWrapper<NmnUserDetails> lambdaUpdateWrapper) {
+        return this.update(lambdaUpdateWrapper);
     }
 }

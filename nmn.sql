@@ -41,6 +41,7 @@ create table nmn_nmn
     online tinyint(1) default 0 null comment '商品：0表示未上线，1表示上线',
     score double(11,2) default 8.70 null comment '商品评分：默认8.7，最高10分',
     cover_img varchar(524) null comment '商品封面图',
+    status tinyint(1) default 0 comment '商品状态：0正常、1被删除',
     constraint nmn_nmn_pk
         primary key (id)
 )
@@ -54,6 +55,7 @@ create table nmn_user_details
     email varchar(50) null comment '用户邮箱',
     idcard varchar(50) null comment '用户身份证',
     address varchar(125) null comment '用户收获地址',
+    name varchar(50) null comment '收货人姓名',
     constraint user_details_pk
         primary key (id)
 )
