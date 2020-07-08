@@ -16,6 +16,8 @@ import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ public class SysOrderController extends ApiController {
     private WeChatConfig weChatConfig;
 
     @PostMapping("WxPay")
+    @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "微信支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
     public String saveAliPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return unifiedOperateMap(map, request, response);
         //生成支付二维码
@@ -49,6 +52,7 @@ public class SysOrderController extends ApiController {
     }
 
     @PostMapping("AliPay")
+    @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "支付宝支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
     public String saveWxPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return unifiedOperateMap(map, request, response);
     }
@@ -231,6 +235,12 @@ public class SysOrderController extends ApiController {
     }
 
     @ApiOperation(value = "订单管理-订单查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "第几页", dataType = "int"),
+            @ApiImplicitParam(name = "limit", value = "一页展示的数据量", dataType = "int"),
+            @ApiImplicitParam(name = "keyword", value = "用于查询的关键词（模糊查询）（订单管理页面 关键词查询）", dataType = "String"),
+            @ApiImplicitParam(name = "userId", value = "用户id（该条件是用户管理界面根据用户id查询该用户下面的订单）（订单管理界面 userId为空）", dataType = "String")
+    })
     @GetMapping("queryOrder")
     public R queryOrder(@RequestParam("page") int page, @RequestParam("limit") int limit, @RequestParam("keyword") String keyword, @RequestParam("userId") String userId) {
         PageHelper.startPage(page, limit);
@@ -242,6 +252,7 @@ public class SysOrderController extends ApiController {
     }
 
     @ApiOperation(value = "订单管理-发货")
+    @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "map（订单id）", dataType = "Map<String, Object>",paramType = "body")})
     @PostMapping("send")
     public R send(@RequestBody Map<String, Object> map) {
         return success(sysNmnOrderService.send(map));
