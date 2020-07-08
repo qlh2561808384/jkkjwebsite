@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class SysEmailController extends ApiController {
 
     @ApiOperation("获取邮箱验证码")
     @GetMapping("getEmailCode")
-    public R getEmailCode(@Param("email") String email) {
+    public R getEmailCode(@RequestParam("email") String email) {
         String code = EmailCodeUtil.generateCode();
         mailVo.sendEmail(javaMailSender, email, code, new Date());
         boolean flag = redisService.setEx(email, code, EXPIRE_TIME);
@@ -52,7 +53,7 @@ public class SysEmailController extends ApiController {
 
     @ApiOperation("校验邮箱验证码")
     @GetMapping("verifyEmailCode")
-    public R verifyEmailCode(@Param("code") String code, @Param("email") String email) {
+    public R verifyEmailCode(@RequestParam("code") String code, @RequestParam("email") String email) {
         Object redisCode = null;
         if (redisService.exists(email)) {
             redisCode = redisService.get(email);
