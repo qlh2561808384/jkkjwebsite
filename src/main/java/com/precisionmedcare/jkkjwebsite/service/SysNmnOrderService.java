@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public interface SysNmnOrderService extends IService<NmnNmnOrder> {
 //    String saveOrder(NmnNmnOrderVo nmnNmnOrderVo) throws Exception;
@@ -20,5 +24,7 @@ public interface SysNmnOrderService extends IService<NmnNmnOrder> {
 
     String aliPay(NmnNmnOrderVo nmnNmnOrderVo);
 
-    IPage<NmnNmnOrder> queryOrder(Page<NmnNmnOrder> page, String keyword);
+    List<HashMap<String, Object>> queryOrder(String keyword,String userId);
+
+    boolean send(Map<String, Object> map);
 }

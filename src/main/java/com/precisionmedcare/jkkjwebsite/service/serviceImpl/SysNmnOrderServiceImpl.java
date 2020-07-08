@@ -218,8 +218,18 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     }
 
     @Override
-    public IPage<NmnNmnOrder> queryOrder(Page<NmnNmnOrder> page, String keyword) {
+    public List<HashMap<String, Object>> queryOrder(String keyword,String userId) {
+        return this.baseMapper.queryOrder(keyword, userId);
+    }
 
-        return null;
+    @Override
+    public boolean send(Map<String, Object> map) {
+        if(!map.isEmpty()){
+            LambdaUpdateWrapper<NmnNmnOrder> nmnNmnOrderLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            nmnNmnOrderLambdaUpdateWrapper.set(NmnNmnOrder::getStatus, ALL_STATUS_DISABLE);
+            nmnNmnOrderLambdaUpdateWrapper.eq(NmnNmnOrder::getId, map.get("nmnOrderId"));
+            return this.update(nmnNmnOrderLambdaUpdateWrapper);
+        }
+        return false;
     }
 }

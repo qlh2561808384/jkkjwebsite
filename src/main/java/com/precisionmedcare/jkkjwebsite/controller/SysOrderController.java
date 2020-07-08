@@ -1,16 +1,11 @@
 package com.precisionmedcare.jkkjwebsite.controller;
 
 import cn.hutool.core.date.DateUtil;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.precisionmedcare.jkkjwebsite.components.wx.CommonUtils;
 import com.precisionmedcare.jkkjwebsite.components.wx.IpUtils;
 import com.precisionmedcare.jkkjwebsite.components.wx.QRCodeUtil;
@@ -22,7 +17,6 @@ import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,10 +42,10 @@ public class SysOrderController extends ApiController {
     private WeChatConfig weChatConfig;
 
     @PostMapping("WxPay")
-    public void saveAliPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String codeUrl = unifiedOperateMap(map, request, response);
+    public String saveAliPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return unifiedOperateMap(map, request, response);
         //生成支付二维码
-        generateQrCode(codeUrl, response);
+//        generateQrCode(codeUrl, response);
     }
 
     @PostMapping("AliPay")
@@ -206,13 +200,14 @@ public class SysOrderController extends ApiController {
 
 
     private String unifiedOperateMap(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String orderTime, userId, userName, codeUrl = "";
+        String orderTime, userId, userName, payType, codeUrl = "";
         List productList = new ArrayList();
         String OutTradeNo = CommonUtils.generateUUID();
         if (!map.isEmpty()) {
             orderTime = map.get("orderTime").toString();
             userId = map.get("userId").toString();
             userName = map.get("userName").toString();
+            payType = map.get("payType").toString();
             productList = (List) map.get("product");
 
             //1、根据用户id和商品id生成订单
@@ -225,16 +220,30 @@ public class SysOrderController extends ApiController {
             //保存订单
             saveNmnOrder(productList, nmnNmnOrderVo);
             //登陆后支付 微信支付 保存订单同时返回codeUrl
-            codeUrl = sysNmnOrderService.weChatPay(nmnNmnOrderVo);
+            if ("weChatPay".equals(payType)) {
+                codeUrl = sysNmnOrderService.weChatPay(nmnNmnOrderVo);
+            }else {
+                codeUrl = sysNmnOrderService.aliPay(nmnNmnOrderVo);
+            }
+
         }
         return codeUrl;
     }
 
-    @ApiOperation(value = "订单查询")
+    @ApiOperation(value = "订单管理-订单查询")
     @GetMapping("queryOrder")
-    public R queryOrder(Page<NmnNmnOrder> page, @Param("keyword") String keyword) {
-        IPage<NmnNmnOrder> allUserList = sysNmnOrderService.queryOrder(page, keyword);
-        return success(allUserList);
+    public R queryOrder(@RequestParam("page") int page, @RequestParam("limit") int limit, @RequestParam("keyword") String keyword, @RequestParam("userId") String userId) {
+        PageHelper.startPage(page, limit);
+        List<HashMap<String, Object>> nmn = sysNmnOrderService.queryOrder(keyword,userId);
+        PageInfo pageInfo = new PageInfo(nmn);
+        return success(JSONUtil.createObj()
+                .putOnce("total", pageInfo.getTotal())
+                .putOnce("data", pageInfo.getList()));
     }
 
+    @ApiOperation(value = "订单管理-发货")
+    @PostMapping("send")
+    public R send(@RequestBody Map<String, Object> map) {
+        return success(sysNmnOrderService.send(map));
+    }
 }
