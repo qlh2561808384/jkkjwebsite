@@ -7,8 +7,9 @@ import com.precisionmedcare.jkkjwebsite.components.ErrorCode;
 import com.precisionmedcare.jkkjwebsite.service.redis.RedisService;
 import com.precisionmedcare.jkkjwebsite.vo.MailVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 
-@Api(tags = "邮箱控制器")
+@Api(tags = "邮箱接口")
 @RestController
 @RequestMapping("email")
 public class SysEmailController extends ApiController {
@@ -39,6 +40,7 @@ public class SysEmailController extends ApiController {
     RedisService redisService;
 
     @ApiOperation("获取邮箱验证码")
+    @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "获取验证码邮箱", dataType = "String")})
     @GetMapping("getEmailCode")
     public R getEmailCode(@RequestParam("email") String email) {
         String code = EmailCodeUtil.generateCode();
@@ -52,6 +54,10 @@ public class SysEmailController extends ApiController {
     }
 
     @ApiOperation("校验邮箱验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "验证码", dataType = "String"),
+            @ApiImplicitParam(name = "email", value = "获取验证码的邮箱", dataType = "String")
+    })
     @GetMapping("verifyEmailCode")
     public R verifyEmailCode(@RequestParam("code") String code, @RequestParam("email") String email) {
         Object redisCode = null;
