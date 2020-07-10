@@ -19,6 +19,7 @@ public class BackStageApiProvider {
     }
     public String queryAllUser(Map<String, Object> map){
         String keyword = map.get("keyword").toString();
+        String userId = map.get("userId").toString();
         StringBuilder sql = new StringBuilder();
         sql.append("select user.id userid,\n" +
                 "       user.email,\n" +
@@ -83,9 +84,10 @@ public class BackStageApiProvider {
                 "where status = 0");
         if(!"".equals(keyword)){
             sql.
-                    append(" and (nmn.title like '%)").
-                    append(keyword).append("%' or nmn.online =").
-                    append(keyword);
+                    append(" and (nmn.title like '%").
+                    append(keyword).
+                    append("%' or nmn.online = ").
+                    append(keyword).append(")");
         }
         return sql.toString();
     }
@@ -116,6 +118,9 @@ public class BackStageApiProvider {
                 "from nmn_nmn_order nmn\n" +
                 "         left join nmn_user user on nmn.user_id = user.id\n" +
                 "where nmn.del = 0");
+        if (!"".equals(userId)) {
+            sql.append(" and user.id = ").append(userId);
+        }
         if(!"".equals(keyword)){
             sql.
                     append(" and (nmn.status like '%").
@@ -132,12 +137,9 @@ public class BackStageApiProvider {
                     append(keyword).
                     append("%' or nmn.address  like '%").
                     append(keyword).
-                    append("%' or user.id  = ").
-                    append(keyword).
-                    append(")");
-        }
-        if (!"".equals(userId)) {
-            sql.append(" and user.id = ").append(userId);
+                   /* append("%' or user.id  = ").
+                    append(keyword).*/
+                    append("%')");
         }
         return sql.toString();
     }
