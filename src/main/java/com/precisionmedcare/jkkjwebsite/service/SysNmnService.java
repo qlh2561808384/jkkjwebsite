@@ -12,4 +12,6 @@ public interface SysNmnService extends IService<NmnNmn> {
     List<HashMap<String, Object>> queryNmn(String keyword);
 
     boolean deleteNmn(String id);
+
+    NmnNmn getOneNmn(String nmnId);
 }

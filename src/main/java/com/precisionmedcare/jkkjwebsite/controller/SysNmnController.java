@@ -54,4 +54,10 @@ public class SysNmnController extends ApiController {
     public R deleteNmn(@RequestParam("id") String id) {
         return success(sysNmnService.deleteNmn(id));
     }
+
+    @ApiOperation(value = "查询单个商品信息根据商品信息")
+    @GetMapping("selectOneNmn")
+    public R selectOneNmn(@RequestParam("nmnId") String nmnId) {
+        return success(sysNmnService.getOneNmn(nmnId));
+    }
 }

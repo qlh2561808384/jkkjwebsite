@@ -2,6 +2,7 @@ package com.precisionmedcare.jkkjwebsite.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.precisionmedcare.jkkjwebsite.domain.NmnUser;
+import com.precisionmedcare.jkkjwebsite.vo.UserAndDetails;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,4 +19,6 @@ public interface SysUserService extends IService<NmnUser> {
     List<HashMap<String, Object>> queryAllUser(String keyword);
 
     boolean modifyUserAndUserDetails(Map<String, Object> map);
+
+    UserAndDetails getOneUser(String userId);
 }

@@ -25,7 +25,7 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
 #端口号配置
 server:
-  port: 8089
+  port: 8088
 # mybatis 控制台打印sql  把你是需要输出sql语句的包（com.precisionmedcare.jkkjwebsite.mapper）的log等级设置为debug
 logging:
   level:
@@ -38,6 +38,7 @@ mybatis:
     map-underscore-to-camel-case: true
     #打印sql，方便调试
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    call-setters-on-nulls: false
 
 #wechat
 wxpay:

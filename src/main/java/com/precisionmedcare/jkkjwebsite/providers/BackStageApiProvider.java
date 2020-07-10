@@ -47,6 +47,25 @@ public class BackStageApiProvider {
         }
         return sql.toString();
     }
+     public String getOneUser(Map<String, Object> map){
+        String userId = map.get("userId").toString();
+         return "select user.id userid,\n" +
+                 "       user.email,\n" +
+                 "       user.nickname,\n" +
+                 "       user_details.email detailsEmail,\n" +
+                 "       user_details.address,\n" +
+                 "       user_details.idcard,\n" +
+                 "       user_details.phone,\n" +
+                 "       user_details.name,\n" +
+                 "       user_details.id userdetailsid\n" +
+                 "from nmn_user user\n" +
+                 "         left join nmn_user_details user_details on user.id = user_details.user_id\n" +
+                 "where user.status = 0\n" +
+                 "  and user.email <> 'admin'" +
+                 " and user.id = " +
+                 userId;
+    }
+
     public String queryNmn(Map<String, Object> map){
         String keyword = map.get("keyword").toString();
         StringBuilder sql = new StringBuilder();
@@ -96,8 +115,7 @@ public class BackStageApiProvider {
                 "       nmn.address\n" +
                 "from nmn_nmn_order nmn\n" +
                 "         left join nmn_user user on nmn.user_id = user.id\n" +
-                "where nmn.state = 0\n" +
-                "  and nmn.del = 0");
+                "where nmn.del = 0");
         if(!"".equals(keyword)){
             sql.
                     append(" and (nmn.status like '%").

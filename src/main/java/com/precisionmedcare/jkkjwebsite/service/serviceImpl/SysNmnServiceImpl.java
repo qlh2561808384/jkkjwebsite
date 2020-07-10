@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmn;
+import com.precisionmedcare.jkkjwebsite.domain.NmnUser;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,13 @@ public class SysNmnServiceImpl extends ServiceImpl<SysNmnMapper, NmnNmn> impleme
         nmnNmnLambdaUpdateWrapper.set(NmnNmn::getStatus, STATUS_DISABLE);
         nmnNmnLambdaUpdateWrapper.eq(NmnNmn::getId, Long.parseLong(id));
         return this.update(nmnNmnLambdaUpdateWrapper);
+    }
+
+    @Override
+    public NmnNmn getOneNmn(String nmnId) {
+        LambdaQueryWrapper<NmnNmn> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(NmnNmn::getStatus, STATUS);
+        lambdaQueryWrapper.eq(NmnNmn::getId, Long.parseLong(nmnId));
+        return this.baseMapper.selectOne(lambdaQueryWrapper);
     }
 }

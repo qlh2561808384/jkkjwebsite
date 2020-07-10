@@ -257,4 +257,10 @@ public class SysOrderController extends ApiController {
     public R send(@RequestBody Map<String, Object> map) {
         return success(sysNmnOrderService.send(map));
     }
+
+    @ApiOperation(value = "查询单个订单根据订单id")
+    @GetMapping("selectOneOrder")
+    public R selectOneOrder(@RequestParam("orderId") String orderId) {
+        return success(sysNmnOrderService.getOneOrder(orderId));
+    }
 }

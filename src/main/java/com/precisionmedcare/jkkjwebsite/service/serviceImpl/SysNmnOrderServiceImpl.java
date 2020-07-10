@@ -232,4 +232,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         }
         return false;
     }
+
+    @Override
+    public NmnNmnOrder getOneOrder(String orderId) {
+/*        LambdaQueryWrapper<NmnNmnOrder> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(NmnNmnOrder::getId, Long.parseLong(orderId));*/
+        return this.baseMapper.selectById(Long.parseLong(orderId));
+    }
 }

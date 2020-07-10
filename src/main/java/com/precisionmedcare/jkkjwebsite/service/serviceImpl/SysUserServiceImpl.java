@@ -12,6 +12,7 @@ import com.precisionmedcare.jkkjwebsite.mapper.SysUserDetailMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysUserMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysUserDetailService;
 import com.precisionmedcare.jkkjwebsite.service.SysUserService;
+import com.precisionmedcare.jkkjwebsite.vo.UserAndDetails;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,21 +107,45 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, NmnUser> impl
     }
 
     private boolean modifyUserDetails(Map<String, Object> map) {
-        LambdaUpdateWrapper<NmnUserDetails> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        lambdaUpdateWrapper.set(NmnUserDetails::getEmail, map.get("detailsEmail").toString());
-        lambdaUpdateWrapper.set(NmnUserDetails::getAddress, map.get("address").toString());
-        lambdaUpdateWrapper.set(NmnUserDetails::getPhone, map.get("phone").toString());
-        lambdaUpdateWrapper.set(NmnUserDetails::getIdcard, map.get("idcard").toString());
-        lambdaUpdateWrapper.set(NmnUserDetails::getName, map.get("name").toString());
-        lambdaUpdateWrapper.eq(NmnUserDetails::getId, map.get("userdetailsid").toString());
-        return sysUserDetailService.saveUserDetails(lambdaUpdateWrapper);
+        if (map.get("userdetailsid") == null || "".equals(map.get("userdetailsid").toString())) {
+            NmnUserDetails nmnUserDetails = new NmnUserDetails();
+            nmnUserDetails.setUserId(Long.parseLong(map.get("userid").toString()));
+            nmnUserDetails.setEmail(map.get("detailsEmail") == null ? "" : map.get("detailsEmail").toString());
+            nmnUserDetails.setAddress(map.get("address") == null ? "" : map.get("address").toString());
+            nmnUserDetails.setPhone(map.get("phone") == null ? "" : map.get("phone").toString());
+            nmnUserDetails.setIdcard(map.get("idcard") == null ? "" : map.get("idcard").toString());
+            nmnUserDetails.setName(map.get("name") == null ? "" : map.get("name").toString());
+            int insert = sysUserDetailMapper.insert(nmnUserDetails);
+            if (insert > 0) {
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            LambdaUpdateWrapper<NmnUserDetails> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            lambdaUpdateWrapper.set(NmnUserDetails::getEmail, map.get("detailsEmail") == null ? "" : map.get("detailsEmail").toString());
+            lambdaUpdateWrapper.set(NmnUserDetails::getAddress, map.get("address") == null ? "" : map.get("address").toString());
+            lambdaUpdateWrapper.set(NmnUserDetails::getPhone, map.get("phone") == null ? "" : map.get("phone").toString());
+            lambdaUpdateWrapper.set(NmnUserDetails::getIdcard, map.get("idcard") == null ? "" : map.get("idcard").toString());
+            lambdaUpdateWrapper.set(NmnUserDetails::getName, map.get("name") == null ? "" : map.get("name").toString());
+            lambdaUpdateWrapper.eq(NmnUserDetails::getId, map.get("userdetailsid").toString());
+            return sysUserDetailService.saveUserDetails(lambdaUpdateWrapper);
+        }
+
     }
 
     private boolean modifyUser(Map<String, Object> map) {
         LambdaUpdateWrapper<NmnUser> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        lambdaUpdateWrapper.set(NmnUser::getEmail, map.get("email").toString());
-        lambdaUpdateWrapper.set(NmnUser::getNickname, map.get("nickname").toString());
+        lambdaUpdateWrapper.set(NmnUser::getEmail, map.get("email") == null ? "" : map.get("email").toString());
+        lambdaUpdateWrapper.set(NmnUser::getNickname, map.get("nickname") == null ? "" : map.get("nickname").toString());
         lambdaUpdateWrapper.eq(NmnUser::getId, map.get("userid").toString());
         return this.update(lambdaUpdateWrapper);
+    }
+
+    @Override
+    public UserAndDetails getOneUser(String userId) {
+      /*  LambdaQueryWrapper<NmnUser> nmnUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        nmnUserLambdaQueryWrapper.eq(NmnUser::getId, Long.parseLong(userId));*/
+        return this.baseMapper.getOneUser(userId);
     }
 }
