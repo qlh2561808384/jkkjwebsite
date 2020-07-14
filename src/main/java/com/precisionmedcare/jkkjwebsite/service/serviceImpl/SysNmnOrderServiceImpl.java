@@ -105,6 +105,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setEmail(nmnNmnOrderVo.getEmail());
         nmnNmnOrder.setIdcard(nmnNmnOrderVo.getIdcard());
         nmnNmnOrder.setAddress(nmnNmnOrderVo.getAddress());
+        nmnNmnOrder.setReceiverName(nmnNmnOrderVo.getReceiverName());
         sysNmnOrderMapper.insert(nmnNmnOrder);
     }
 
@@ -134,7 +135,8 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         //国际微信
 //        params.put("fee_type","USD");//商户订单号,商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一
 
-        params.put("total_fee", String.valueOf(nmnNmnOrderVo.getTotalAmount()));//标价金额	分
+//        params.put("total_fee", String.valueOf(nmnNmnOrderVo.getTotalAmount()));//标价金额	分
+        params.put("total_fee", "999");//标价金额	分
         params.put("spbill_create_ip",nmnNmnOrderVo.getIp());
         params.put("notify_url",weChatConfig.getPayCallbackUrl());  //通知地址
         params.put("trade_type","NATIVE"); //交易类型 JSAPI 公众号支付 NATIVE 扫码支付 APP APP支付
@@ -234,9 +236,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     }
 
     @Override
-    public NmnNmnOrder getOneOrder(String orderId) {
-/*        LambdaQueryWrapper<NmnNmnOrder> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(NmnNmnOrder::getId, Long.parseLong(orderId));*/
-        return this.baseMapper.selectById(Long.parseLong(orderId));
+    public HashMap<String, Object> getOneOrder(String orderId) {
+        return this.baseMapper.selectOneOrderById(orderId);
     }
 }

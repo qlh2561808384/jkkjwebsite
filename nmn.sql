@@ -81,6 +81,7 @@ create table nmn_nmn_order
     email varchar(50) null comment '用户邮箱',
     idcard varchar(50) null comment '用户身份证',
     address varchar(125) null comment '用户收获地址',
+    receiver_name varchar(50) null comment '收获人昵称',
     constraint nmn_nmn_order_pk
         primary key (id)
 )

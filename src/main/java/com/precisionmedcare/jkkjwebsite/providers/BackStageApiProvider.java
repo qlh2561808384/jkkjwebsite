@@ -19,7 +19,7 @@ public class BackStageApiProvider {
     }
     public String queryAllUser(Map<String, Object> map){
         String keyword = map.get("keyword").toString();
-        String userId = map.get("userId").toString();
+//        String userId = map.get("userId").toString();
         StringBuilder sql = new StringBuilder();
         sql.append("select user.id userid,\n" +
                 "       user.email,\n" +
@@ -114,9 +114,12 @@ public class BackStageApiProvider {
                 "       nmn.phone,\n" +
                 "       nmn.email        receiveEmail,\n" +
                 "       nmn.idcard,\n" +
-                "       nmn.address\n" +
+                "       nmn.address,\n" +
+                "       nmn.receiver_name receiverName,\n" +
+                "       nmnnmn.summary\n" +
                 "from nmn_nmn_order nmn\n" +
                 "         left join nmn_user user on nmn.user_id = user.id\n" +
+                "         left join nmn_nmn nmnnmn on nmn.nmn_id = nmnnmn.id\n" +
                 "where nmn.del = 0");
         if (!"".equals(userId)) {
             sql.append(" and user.id = ").append(userId);
@@ -142,5 +145,33 @@ public class BackStageApiProvider {
                     append("%')");
         }
         return sql.toString();
+    }
+
+    public String selectOneOrderById(Map<String, Object> map){
+        String orderId = map.get("orderId").toString();
+        return "SELECT nmn_nmn_order.id,\n" +
+                "       nmn_nmn_order.out_trade_no,\n" +
+                "       nmn_nmn_order.state,\n" +
+                "       nmn_nmn_order.create_time,\n" +
+                "       nmn_nmn_order.notify_time,\n" +
+                "       nmn_nmn_order.total_fee,\n" +
+                "       nmn_nmn_order.nmn_id,\n" +
+                "       nmn_nmn_order.nmn_title,\n" +
+                "       nmn_nmn_order.nmn_img,\n" +
+                "       nmn_nmn_order.user_id,\n" +
+                "       nmn_nmn_order.ip,\n" +
+                "       nmn_nmn_order.del,\n" +
+                "       nmn_nmn_order.status,\n" +
+                "       nmn_nmn_order.payment_types,\n" +
+                "       nmn_nmn_order.phone,\n" +
+                "       nmn_nmn_order.email,\n" +
+                "       nmn_nmn_order.idcard,\n" +
+                "       nmn_nmn_order.address,\n" +
+                "       nmn_nmn_order.receiver_name,\n" +
+                "       nmn_nmn.summary\n" +
+                "FROM nmn_nmn_order\n" +
+                "         left join nmn_nmn on nmn_nmn_order.nmn_id = nmn_nmn.id\n" +
+                "WHERE nmn_nmn_order.del = 0 " +
+                " and nmn_nmn_order.id = " + orderId;
     }
 }

@@ -136,13 +136,14 @@ public class SysOrderController extends ApiController {
      * @return
      */
     public NmnNmnOrderVo saveNmnOrderVo(Map<String, Object> map, HttpServletRequest request, String OutTradeNo) {
-        String userAddress, userIdCard, userPhone, email, totalFee, payType;
+        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName;
         NmnNmnOrderVo nmnNmnOrderVo = new NmnNmnOrderVo();
         userAddress = map.get("userAddress").toString();
         userIdCard = map.get("userIdCard").toString();
         email = map.get("email").toString();
         userPhone = map.get("userPhone").toString();
         totalFee = map.get("totalFee").toString();
+        receiverName = map.get("userName").toString();
         payType = map.get("payType").toString();
         nmnNmnOrderVo.setIp(IpUtils.getIpAddr(request));
         nmnNmnOrderVo.setPhone(userPhone);
@@ -153,6 +154,7 @@ public class SysOrderController extends ApiController {
         nmnNmnOrderVo.setPayType(payType);
 //        nmnNmnOrderVo.setGeneralTitle(generalTitle);
         nmnNmnOrderVo.setTotalAmount(totalFee);
+        nmnNmnOrderVo.setReceiverName(receiverName);
         return nmnNmnOrderVo;
     }
 
@@ -165,11 +167,11 @@ public class SysOrderController extends ApiController {
         Map<String, Object> productMap = new HashMap<>();
         for (Object product : productList) {
             productMap = (Map<String, Object>) product;
-            nmnName = productMap.get("nmnName").toString();
-            nmnPrice = productMap.get("nmnPrice").toString();
-            nmnNumber = productMap.get("nmnNumber").toString();
-            nmnTotal = productMap.get("nmnTotal").toString();
-            nmnId = productMap.get("nmnId").toString();
+            nmnName = productMap.get("title").toString();
+            nmnPrice = productMap.get("price").toString();
+            nmnNumber = productMap.get("num").toString();
+            nmnTotal = productMap.get("total").toString();
+            nmnId = productMap.get("id").toString();
             nmnNmnOrderVo.setNmnId(Long.parseLong(nmnId));
             nmnNmnOrderVo.setTotalFee(Long.parseLong(nmnTotal));
             nmnNmnOrderVo.setNmnTitle(nmnName);
@@ -204,13 +206,12 @@ public class SysOrderController extends ApiController {
 
 
     private String unifiedOperateMap(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String orderTime, userId, userName, payType, codeUrl = "";
+        String orderTime, userId, payType, codeUrl = "";
         List productList = new ArrayList();
         String OutTradeNo = CommonUtils.generateUUID();
         if (!map.isEmpty()) {
             orderTime = map.get("orderTime").toString();
             userId = map.get("userId").toString();
-            userName = map.get("userName").toString();
             payType = map.get("payType").toString();
             productList = (List) map.get("product");
 

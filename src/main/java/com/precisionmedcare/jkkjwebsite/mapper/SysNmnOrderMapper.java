@@ -13,4 +13,7 @@ public interface SysNmnOrderMapper extends BaseMapper<NmnNmnOrder> {
 
     @SelectProvider(type = BackStageApiProvider.class, method = "queryOrder")
     List<HashMap<String, Object>> queryOrder(@Param("keyword") String keyword, @Param("userId") String userId);
+
+    @SelectProvider(type = BackStageApiProvider.class, method = "selectOneOrderById")
+    HashMap<String, Object> selectOneOrderById(@Param("orderId") String orderId);
 }
