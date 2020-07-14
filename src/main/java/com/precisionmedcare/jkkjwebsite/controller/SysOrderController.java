@@ -175,6 +175,7 @@ public class SysOrderController extends ApiController {
             nmnNmnOrderVo.setNmnId(Long.parseLong(nmnId));
             nmnNmnOrderVo.setTotalFee(Long.parseLong(nmnTotal));
             nmnNmnOrderVo.setNmnTitle(nmnName);
+            nmnNmnOrderVo.setAmount(nmnNumber);
 //            sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
         }
     }

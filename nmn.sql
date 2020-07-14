@@ -82,9 +82,11 @@ create table nmn_nmn_order
     idcard varchar(50) null comment '用户身份证',
     address varchar(125) null comment '用户收获地址',
     receiver_name varchar(50) null comment '收获人昵称',
+    amount varchar(50) null comment '商品购买数量',
     constraint nmn_nmn_order_pk
         primary key (id)
 )
     comment '商品订单表';
 
 
+alter table nmn_nmn_order add amount varchar(50) null comment '商品购买数量';
