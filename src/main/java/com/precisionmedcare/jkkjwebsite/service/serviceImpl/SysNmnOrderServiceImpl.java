@@ -20,8 +20,10 @@ import com.precisionmedcare.jkkjwebsite.mapper.SysNmnOrderMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysUserMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
 import com.precisionmedcare.jkkjwebsite.vo.GlobalAlipayVo;
+import com.precisionmedcare.jkkjwebsite.vo.MailVo;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +36,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     private static final long ALL_STATUS_DISABLE = 1;
     private static final String WX_PAY_TYPE = "weChatPay";
     private static final String ALI_PAY_TYPE = "aliPay";
+    private static final String EMAIL_MSG = "您购买的商品已发货/The item you purchased has been shipped";
 
     @Autowired
     SysNmnMapper sysNmnMapper;
@@ -45,6 +48,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     private WeChatConfig weChatConfig;
     @Autowired
     private GlobalAlipayVo globalAlipayVo;
+    @Autowired
+    MailVo mailVo;
+    //获取邮件发送类
+    @Autowired
+    JavaMailSender javaMailSender;
 
 /*    @Override
     public String saveOrder(NmnNmnOrderVo nmnNmnOrderVo) throws Exception {
@@ -231,11 +239,23 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
             LambdaUpdateWrapper<NmnNmnOrder> nmnNmnOrderLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
             nmnNmnOrderLambdaUpdateWrapper.set(NmnNmnOrder::getStatus, ALL_STATUS_DISABLE);
             nmnNmnOrderLambdaUpdateWrapper.eq(NmnNmnOrder::getId, map.get("nmnOrderId"));
-            return this.update(nmnNmnOrderLambdaUpdateWrapper);
+            boolean update = this.update(nmnNmnOrderLambdaUpdateWrapper);
+            if(update){
+                NmnNmnOrder nmnNmnOrder = getNmnNmnOrder(map);
+                mailVo.sendEmail(javaMailSender, nmnNmnOrder.getEmail(), EMAIL_MSG, new Date());
+                return true;
+            }else {
+                return false;
+            }
         }
         return false;
     }
 
+    private NmnNmnOrder getNmnNmnOrder(Map<String, Object> map) {
+        LambdaQueryWrapper<NmnNmnOrder> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(NmnNmnOrder::getId, map.get("nmnOrderId"));
+        return this.baseMapper.selectOne(lambdaQueryWrapper);
+    }
     @Override
     public HashMap<String, Object> getOneOrder(String orderId) {
         return this.baseMapper.selectOneOrderById(orderId);
