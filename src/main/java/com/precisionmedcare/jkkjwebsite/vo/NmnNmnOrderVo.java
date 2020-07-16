@@ -6,7 +6,7 @@ public class NmnNmnOrderVo extends NmnNmnOrder {
 
     private String generalTitle;
 
-    private String totalAmount;
+    private long totalAmount;
 
     private String payType;
 
@@ -18,15 +18,13 @@ public class NmnNmnOrderVo extends NmnNmnOrder {
         this.payType = payType;
     }
 
-
-    public String getTotalAmount() {
+    public long getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(String totalAmount) {
+    public void setTotalAmount(long totalAmount) {
         this.totalAmount = totalAmount;
     }
-
 
     public String getGeneralTitle() {
         return generalTitle;

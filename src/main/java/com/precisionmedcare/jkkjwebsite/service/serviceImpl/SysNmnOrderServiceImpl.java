@@ -211,7 +211,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         sParaTemp.put("return_url", AliPayConfig.return_url);
         sParaTemp.put("out_trade_no", new SimpleDateFormat().format(new Date()));
         sParaTemp.put("subject", nmnNmnOrderVo.getNmnTitle());
-        sParaTemp.put("total_fee", nmnNmnOrderVo.getTotalAmount());
+        sParaTemp.put("total_fee", String.valueOf(nmnNmnOrderVo.getTotalAmount() / 100));
         //sParaTemp.put("rmb_fee", rmb_fee);
         sParaTemp.put("body", "test");//body商品描述 可为空
         sParaTemp.put("currency", "USD");//currency 币种，不可空
