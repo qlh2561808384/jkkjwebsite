@@ -42,6 +42,7 @@ create table nmn_nmn
     score double(11,2) default 8.70 null comment '商品评分：默认8.7，最高10分',
     cover_img varchar(524) null comment '商品封面图',
     status tinyint(1) default 0 comment '商品状态：0正常、1被删除',
+    detailed_drawing varchar(250) null comment '商品详细图',
     constraint nmn_nmn_pk
         primary key (id)
 )
@@ -90,3 +91,4 @@ create table nmn_nmn_order
 
 
 alter table nmn_nmn_order add amount varchar(50) null comment '商品购买数量';
+alter table nmn_nmn add detailed_drawing varchar(250) null comment '商品详细图';

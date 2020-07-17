@@ -20,5 +20,6 @@ public class NmnNmn implements Serializable {
   private double score;
   private String coverImg;
   private long status;
+  private long detailedDrawing;
 
 }
