@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.precisionmedcare.jkkjwebsite.components.wx.CommonUtils;
-import com.precisionmedcare.jkkjwebsite.components.wx.IpUtils;
-import com.precisionmedcare.jkkjwebsite.components.wx.QRCodeUtil;
-import com.precisionmedcare.jkkjwebsite.components.wx.WXPayUtil;
+import com.precisionmedcare.jkkjwebsite.components.wx.*;
 import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
@@ -42,6 +39,8 @@ public class SysOrderController extends ApiController {
 
     @Autowired
     private WeChatConfig weChatConfig;
+    @Autowired
+    WeChatPayProperties weChatPayProperties;
 
     @PostMapping("WxPay")
     @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "微信支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
@@ -68,7 +67,7 @@ public class SysOrderController extends ApiController {
      * 推荐的做法是，当收到通知进行处理时，首先检查对应业务数据的状态，判断该通知是否已经处理过，如果没有处理过再进行处理，如果处理过直接返回结果成功。在对业务数据进行状态检查和处理之前，要采用数据锁进行并发控制，以避免函数重入造成的数据混乱。
      * 特别提醒：商户系统对于支付结果通知的内容一定要做签名验证，防止数据泄漏导致出现“假通知”，造成资金损失。
      */
-    @RequestMapping("callback")
+/*    @RequestMapping("callback")
     public void orderCallback(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         InputStream inputStream = request.getInputStream();
@@ -126,8 +125,71 @@ public class SysOrderController extends ApiController {
         response.setContentType("text/xml");
         response.getWriter().println("fail");
 
+    }*/
+    /**
+     * 支付回调
+     * @throws Exception
+     */
+    @RequestMapping("/wxNotify")
+    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        Map<String, String> parseNotifyParameter = parseNotifyParameter(request);
+        String sign = WeChatUtil.generateSign(parseNotifyParameter,weChatPayProperties.getKey());//生成签名
+        if(sign.equals(parseNotifyParameter.get("sign"))){
+            //支付成功
+            //判断回调信息是否成功
+            if ("SUCCESS".equals(parseNotifyParameter.get("result_code"))) {
+                //获取商户订单号
+                //商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一
+                String outTradeNo = parseNotifyParameter.get("out_trade_no");
+                System.out.println(outTradeNo);
+                //6、数据库查找订单,如果存在则根据订单号更新该订单
+                NmnNmnOrder nmnNmnOrder = sysNmnOrderService.findByOutTradeNo(outTradeNo);
+                System.out.println(nmnNmnOrder);
+                if (nmnNmnOrder != null && nmnNmnOrder.getState() == 0) {  //判断逻辑看业务场景
+                    NmnNmnOrder NmnOrder = new NmnNmnOrder();
+                    NmnOrder.setOutTradeNo(outTradeNo);
+                    NmnOrder.setNotifyTime(DateUtil.now());
+                    //修改支付状态，之前生成的订单支付状态是未支付，这里表面已经支付成功的订单
+                    NmnOrder.setState(1);
+                    //根据商户订单号更新订单
+                    int rows = sysNmnOrderService.updateVideoOderByOutTradeNo(NmnOrder);
+                    System.out.println(rows);
+                    //7、通知微信订单处理成功
+                    if (rows == 1) {
+                        response.setContentType("text/xml");
+                        response.getWriter().println("success");
+                        return;
+                    }
+                }
+            }
+        }else {
+            //7、通知微信订单处理失败
+            response.setContentType("text/xml");
+            response.getWriter().println("fail");
+        }
     }
+    /**
+     * 从request的inputStream中获取参数
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> parseNotifyParameter(HttpServletRequest request) throws Exception {
+        InputStream inputStream = request.getInputStream();
+        ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length = 0;
+        while ((length = inputStream.read(buffer)) != -1) {
+            outSteam.write(buffer, 0, length);
+        }
+        outSteam.close();
+        inputStream.close();
 
+        // 获取微信调用我们notify_url的返回信息
+        String resultXml = new String(outSteam.toByteArray(), "utf-8");
+        Map<String, String> notifyMap = WeChatUtil.xmlToMap(resultXml);
+        return notifyMap;
+    }
     /**
      * 提取用户信息表跟订单表公共部分
      *
@@ -176,32 +238,7 @@ public class SysOrderController extends ApiController {
             nmnNmnOrderVo.setTotalFee(Long.parseLong(nmnTotal));
             nmnNmnOrderVo.setNmnTitle(nmnName);
             nmnNmnOrderVo.setAmount(nmnNumber);
-//            sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
-        }
-    }
-
-    /**
-     * @param codeUrl
-     * @param response
-     * @throws IOException
-     */
-    private void generateQrCode(String codeUrl, HttpServletResponse response) throws IOException {
-        if (codeUrl == null) {
-            throw new NullPointerException();
-        }
-        //3、通过google工具生成二维码供用户扫码支付
-        ServletOutputStream stream = null;
-        try {
-            stream = response.getOutputStream();
-            //使用工具类生成二维码
-            QRCodeUtil.encode(codeUrl, stream);
-        } catch (Exception e) {
-            e.getStackTrace();
-        } finally {
-            if (stream != null) {
-                stream.flush();
-                stream.close();
-            }
+            sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
         }
     }
 
