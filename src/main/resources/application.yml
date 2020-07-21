@@ -13,7 +13,8 @@ spring:
   mail:
     host: smtp.exmail.qq.com
     username: noreply@trinitysci.com
-    password: Jingkang1
+#    password: Jingkang1
+    password: hm8VjnFiYAcMaDkd
     port: 465
     default-encoding: UTF-8
     test-connection: false
