@@ -44,16 +44,16 @@ public class SysOrderController extends ApiController {
 
     @PostMapping("WxPay")
     @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "微信支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
-    public String saveAliPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return unifiedOperateMap(map, request, response);
+    public R saveAliPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return success(unifiedOperateMap(map, request, response));
         //生成支付二维码
 //        generateQrCode(codeUrl, response);
     }
 
     @PostMapping("AliPay")
     @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "支付宝支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
-    public String saveWxPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return unifiedOperateMap(map, request, response);
+    public R saveWxPayOrder(@RequestBody Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return success(unifiedOperateMap(map, request, response));
     }
 
     /**
