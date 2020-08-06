@@ -243,7 +243,7 @@ public class SysOrderController extends ApiController {
     }
 
 
-    private String unifiedOperateMap(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private R unifiedOperateMap(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String orderTime, userId, payType, codeUrl = "";
         List productList = new ArrayList();
         String OutTradeNo = CommonUtils.generateUUID();
@@ -263,14 +263,15 @@ public class SysOrderController extends ApiController {
             //保存订单
             saveNmnOrder(productList, nmnNmnOrderVo);
             //登陆后支付 微信支付 保存订单同时返回codeUrl
-            if ("weChatPay".equals(payType)) {
+           /* if ("weChatPay".equals(payType)) {
                 codeUrl = sysNmnOrderService.weChatPay(nmnNmnOrderVo);
             }else {
                 codeUrl = sysNmnOrderService.aliPay(nmnNmnOrderVo);
-            }
-
+            }*/
+            return success(OutTradeNo);
+        }else {
+            return success(false);
         }
-        return codeUrl;
     }
 
     @ApiOperation(value = "订单管理-订单查询")
@@ -302,4 +303,12 @@ public class SysOrderController extends ApiController {
     public R selectOneOrder(@RequestParam("orderId") String orderId) {
         return success(sysNmnOrderService.getOneOrder(orderId));
     }
+
+    @ApiOperation(value = "订单管理-支付确认")
+    @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "map（订单号）", dataType = "Map<String, Object>",paramType = "body")})
+    @PostMapping("checkBuy")
+    public R checkBuy(@RequestBody Map<String, Object> map) {
+        return success(sysNmnOrderService.checkBuy(map));
+    }
+
 }

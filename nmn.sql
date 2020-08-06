@@ -36,7 +36,7 @@ create table nmn_nmn
     title varchar(524) null comment '商品标题',
     summary varchar(1026) null comment '商品描述',
     view_num int(10) default 0 null comment '商品购买数量',
-    price int null comment '商品价格，（单位/分）',
+    price int null comment '商品价格，（单位/美元）（微信单位/分）（支付宝单位/元）',
     create_time datetime null comment '创建时间',
     online tinyint(1) default 0 null comment '商品：0表示未上线，1表示上线',
     score double(11,2) default 8.70 null comment '商品评分：默认8.7，最高10分',

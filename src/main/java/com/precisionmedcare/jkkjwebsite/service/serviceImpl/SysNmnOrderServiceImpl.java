@@ -325,4 +325,16 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     public HashMap<String, Object> getOneOrder(String orderId) {
         return this.baseMapper.selectOneOrderById(orderId);
     }
+
+    @Override
+    public boolean checkBuy(Map<String, Object> map) {
+        if(!map.isEmpty()) {
+            LambdaUpdateWrapper<NmnNmnOrder> nmnNmnOrderLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            nmnNmnOrderLambdaUpdateWrapper.set(NmnNmnOrder::getState, ALL_STATUS_DISABLE);
+            nmnNmnOrderLambdaUpdateWrapper.eq(NmnNmnOrder::getOutTradeNo, map.get("outTradeNo"));
+            return this.update(nmnNmnOrderLambdaUpdateWrapper);
+        }else{
+            return false;
+        }
+    }
 }

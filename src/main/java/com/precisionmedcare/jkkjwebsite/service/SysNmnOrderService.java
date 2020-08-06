@@ -29,4 +29,6 @@ public interface SysNmnOrderService extends IService<NmnNmnOrder> {
     boolean send(Map<String, Object> map);
 
     HashMap<String, Object> getOneOrder(String orderId);
+
+    boolean checkBuy(Map<String, Object> map);
 }
