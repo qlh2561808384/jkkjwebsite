@@ -117,6 +117,7 @@ public class BackStageApiProvider {
                 "       nmn.idcard,\n" +
                 "       nmn.address,\n" +
                 "       nmn.receiver_name receiverName,\n" +
+                "       nmn.amount amount,\n" +
                 "       nmnnmn.summary\n" +
                 "from nmn_nmn_order nmn\n" +
                 "         left join nmn_user user on nmn.user_id = user.id\n" +
@@ -169,6 +170,7 @@ public class BackStageApiProvider {
                 "       nmn_nmn_order.idcard,\n" +
                 "       nmn_nmn_order.address,\n" +
                 "       nmn_nmn_order.receiver_name,\n" +
+                "       nmn_nmn_order.amount,\n" +
                 "       nmn_nmn.summary\n" +
                 "FROM nmn_nmn_order\n" +
                 "         left join nmn_nmn on nmn_nmn_order.nmn_id = nmn_nmn.id\n" +
