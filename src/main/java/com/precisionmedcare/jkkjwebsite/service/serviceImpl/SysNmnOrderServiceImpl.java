@@ -129,6 +129,8 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setAddress(nmnNmnOrderVo.getAddress());
         nmnNmnOrder.setReceiverName(nmnNmnOrderVo.getReceiverName());
         nmnNmnOrder.setAmount(nmnNmnOrderVo.getAmount());
+        nmnNmnOrder.setCode(nmnNmnOrderVo.getCode());
+        nmnNmnOrder.setOrderNote(nmnNmnOrderVo.getOrderNote());
         sysNmnOrderMapper.insert(nmnNmnOrder);
     }
 
