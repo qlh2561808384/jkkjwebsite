@@ -80,7 +80,9 @@ public class BackStageApiProvider {
                 "       nmn.summary,\n" +
                 "       nmn.title,\n" +
                 "       nmn.view_num    viewNum,\n" +
-                "       nmn.detailed_drawing    detailedDrawing\n" +
+                "       nmn.detailed_drawing    detailedDrawing,\n" +
+                "       nmn.quarterly_discount    quarterlyDiscount,\n" +
+                "       nmn.annual_discount   annualDiscount\n" +
                 "from nmn_nmn nmn\n" +
                 "where status = 0");
         if(!"".equals(keyword)){

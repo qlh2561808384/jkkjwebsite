@@ -43,6 +43,8 @@ create table nmn_nmn
     cover_img varchar(524) null comment '商品封面图',
     status tinyint(1) default 0 comment '商品状态：0正常、1被删除',
     detailed_drawing varchar(250) null comment '商品详细图',
+    quarterly_discount double(3,3) null comment '季度折扣',
+    annual_discount double(3,3) null comment '年度折扣',
     constraint nmn_nmn_pk
         primary key (id)
 )
@@ -84,11 +86,11 @@ create table nmn_nmn_order
     address varchar(125) null comment '用户收获地址',
     receiver_name varchar(50) null comment '收获人昵称',
     amount varchar(50) null comment '商品购买数量',
+    code varchar(125) null comment '经销商的码',
+    order_note varchar(50) null comment '订单备注',
     constraint nmn_nmn_order_pk
         primary key (id)
 )
     comment '商品订单表';
 
 
-alter table nmn_nmn_order add amount varchar(50) null comment '商品购买数量';
-alter table nmn_nmn add detailed_drawing varchar(250) null comment '商品详细图';

@@ -21,5 +21,7 @@ public class NmnNmn implements Serializable {
   private String coverImg;
   private long status;
   private long detailedDrawing;
+  private double quarterlyDiscount;
+  private double annualDiscount;
 
 }

@@ -31,4 +31,6 @@ public class NmnNmnOrder implements Serializable {
   private String address;
   private String receiverName;
   private String amount;
+  private String code;
+  private String orderNote;
 }

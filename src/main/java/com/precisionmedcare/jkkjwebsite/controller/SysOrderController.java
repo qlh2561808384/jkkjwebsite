@@ -198,7 +198,7 @@ public class SysOrderController extends ApiController {
      * @return
      */
     public NmnNmnOrderVo saveNmnOrderVo(Map<String, Object> map, HttpServletRequest request, String OutTradeNo) {
-        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName;
+        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName,code,orderNote;
         NmnNmnOrderVo nmnNmnOrderVo = new NmnNmnOrderVo();
         userAddress = map.get("userAddress").toString();
         userIdCard = map.get("userIdCard").toString();
@@ -207,6 +207,8 @@ public class SysOrderController extends ApiController {
         totalFee = map.get("totalFee").toString();
         receiverName = map.get("userName").toString();
         payType = map.get("payType").toString();
+        code = map.get("code").toString();
+        orderNote = map.get("orderNote").toString();
         nmnNmnOrderVo.setIp(IpUtils.getIpAddr(request));
         nmnNmnOrderVo.setPhone(userPhone);
         nmnNmnOrderVo.setEmail(email);
@@ -217,6 +219,8 @@ public class SysOrderController extends ApiController {
 //        nmnNmnOrderVo.setGeneralTitle(generalTitle);
         nmnNmnOrderVo.setTotalAmount(Long.parseLong(totalFee));
         nmnNmnOrderVo.setReceiverName(receiverName);
+        nmnNmnOrderVo.setCode(code);
+        nmnNmnOrderVo.setOrderNote(orderNote);
         return nmnNmnOrderVo;
     }
 
