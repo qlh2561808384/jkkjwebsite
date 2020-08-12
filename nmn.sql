@@ -36,7 +36,7 @@ create table nmn_nmn
     title varchar(524) null comment '商品标题',
     summary varchar(1026) null comment '商品描述',
     view_num int(10) default 0 null comment '商品购买数量',
-    price int null comment '商品价格，（单位/美元）（微信单位/分）（支付宝单位/元）',
+    price double(11,2) null comment '商品价格，（单位/美元）（微信单位/分）（支付宝单位/元）',
     create_time datetime null comment '创建时间',
     online tinyint(1) default 0 null comment '商品：0表示未上线，1表示上线',
     score double(11,2) default 8.70 null comment '商品评分：默认8.7，最高10分',
@@ -71,7 +71,7 @@ create table nmn_nmn_order
     state tinyint(1) null comment '订单状态，0表示未支付，1表示已支付',
     create_time datetime null comment '订单生成时间',
     notify_time datetime null comment '支付回调时间',
-    total_fee int null comment '支付总金额，单位分',
+    total_fee double(11,2) null comment '支付总金额，单位美金',
     nmn_id int null comment 'nmn商品主键id',
     nmn_title varchar(128) null comment 'nmn商品标题',
     nmn_img varchar(256) null comment 'nmn商品图片',
@@ -92,5 +92,3 @@ create table nmn_nmn_order
         primary key (id)
 )
     comment '商品订单表';
-
-

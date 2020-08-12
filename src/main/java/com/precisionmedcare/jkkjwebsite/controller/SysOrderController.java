@@ -239,7 +239,7 @@ public class SysOrderController extends ApiController {
             nmnTotal = productMap.get("total").toString();
             nmnId = productMap.get("id").toString();
             nmnNmnOrderVo.setNmnId(Long.parseLong(nmnId));
-            nmnNmnOrderVo.setTotalFee(Long.parseLong(nmnTotal));
+            nmnNmnOrderVo.setTotalFee(Double.parseDouble(nmnTotal));
             nmnNmnOrderVo.setNmnTitle(nmnName);
             nmnNmnOrderVo.setAmount(nmnNumber);
             sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);

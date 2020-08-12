@@ -16,7 +16,7 @@ public class NmnNmnOrder implements Serializable {
   private long state;
   private String createTime;
   private String notifyTime;
-  private long totalFee;
+  private double totalFee;
   private long nmnId;
   private String nmnTitle;
   private String nmnImg;
