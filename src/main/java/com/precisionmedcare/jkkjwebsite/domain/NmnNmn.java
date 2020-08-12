@@ -13,14 +13,14 @@ public class NmnNmn implements Serializable {
   private long id;
   private String title;
   private String summary;
-  private long viewNum;
-  private double price;
+  private Long viewNum;
+  private long price;
   private String createTime;
-  private long online;
-  private double score;
+  private Long online;
+  private Double score;
   private String coverImg;
-  private long status;
-  private long detailedDrawing;
+  private Long status;
+  private String detailedDrawing;
   private double quarterlyDiscount;
   private double annualDiscount;
 
