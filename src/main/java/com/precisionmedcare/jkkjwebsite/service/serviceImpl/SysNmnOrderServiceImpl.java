@@ -309,6 +309,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
             boolean update = this.update(nmnNmnOrderLambdaUpdateWrapper);
             if(update){
                 NmnNmnOrder nmnNmnOrder = getNmnNmnOrder(map);
+                mailVo.setSubject("发货通知");
                 mailVo.sendEmail(javaMailSender, nmnNmnOrder.getEmail(), EMAIL_MSG, new Date());
                 return true;
             }else {
