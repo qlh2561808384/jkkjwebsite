@@ -217,7 +217,7 @@ public class SysOrderController extends ApiController {
         nmnNmnOrderVo.setOutTradeNo(OutTradeNo);
         nmnNmnOrderVo.setPayType(payType);
 //        nmnNmnOrderVo.setGeneralTitle(generalTitle);
-        nmnNmnOrderVo.setTotalAmount(Long.parseLong(totalFee));
+        nmnNmnOrderVo.setTotalAmount(Double.parseDouble(totalFee));
         nmnNmnOrderVo.setReceiverName(receiverName);
         nmnNmnOrderVo.setCode(code);
         nmnNmnOrderVo.setOrderNote(orderNote);
