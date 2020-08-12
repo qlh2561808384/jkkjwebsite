@@ -92,6 +92,7 @@ public class BackStageApiProvider {
                     append("%' or nmn.online = ").
                     append(keyword).append(")");
         }
+        sql.append(" order by nmn.create_time desc");
         return sql.toString();
     }
 
@@ -148,6 +149,7 @@ public class BackStageApiProvider {
                     append(keyword).*/
                     append("%')");
         }
+        sql.append(" order by nmn.create_time desc");
         return sql.toString();
     }
 
@@ -177,6 +179,7 @@ public class BackStageApiProvider {
                 "FROM nmn_nmn_order\n" +
                 "         left join nmn_nmn on nmn_nmn_order.nmn_id = nmn_nmn.id\n" +
                 "WHERE nmn_nmn_order.del = 0 " +
-                " and nmn_nmn_order.id = " + orderId;
+                " and nmn_nmn_order.id = " + orderId +
+                " order by nmn_nmn_order.create_time desc";
     }
 }
