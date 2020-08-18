@@ -7,9 +7,14 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 
 @Data
@@ -24,7 +29,6 @@ public class MailVo {
     @ApiModelProperty(value = "邮件接收人")
     private String to;
     @ApiModelProperty(value = "邮件主题")
-    @Value("注册验证码")
     private String subject;
     @ApiModelProperty(value = "邮件内容")
     private String text;
@@ -41,14 +45,25 @@ public class MailVo {
     @ApiModelProperty(value = "邮件附件")
     @JsonIgnore
     private MultipartFile[] multipartFiles;
-
-    public void sendEmail(JavaMailSender javaMailSender, String to, String text, Date sentDate) {
+    public void sendEmail(JavaMailSender javaMailSender) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setSubject(this.getSubject());
-        simpleMailMessage.setFrom(this.getFrom());
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setText(text);
-        simpleMailMessage.setSentDate(sentDate);
+        simpleMailMessage.setSubject(this.subject);
+        simpleMailMessage.setFrom(this.from);
+        simpleMailMessage.setTo(this.to);
+        simpleMailMessage.setText(this.text);
+        simpleMailMessage.setSentDate(this.sentDate);
         javaMailSender.send(simpleMailMessage);
+    }
+
+    public void sendEmail(JavaMailSender javaMailSender, TemplateEngine templateEngine, Context context, String html) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        helper.setSubject(this.subject);
+        helper.setFrom(this.from);
+        helper.setTo(this.to);
+        helper.setSentDate(this.sentDate);
+        String process = templateEngine.process(html, context);
+        helper.setText(process, true);
+        javaMailSender.send(mimeMessage);
     }
 }

@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.TemplateEngine;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,6 +43,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     private static final String WX_PAY_TYPE = "weChatPay";
     private static final String ALI_PAY_TYPE = "aliPay";
     private static final String EMAIL_MSG = "您购买的商品已发货/The item you purchased has been shipped";
+    private static final String MANAGE_EMAIL = "2561808384@qq.com";
 
     private static final String UNIFIEDORDERURL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
     private static final String GETSIGNKEYURL = "https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey";
@@ -59,11 +61,13 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     private GlobalAlipayVo globalAlipayVo;
     @Autowired
     MailVo mailVo;
+    @Autowired
+    WeChatPayProperties weChatPayProperties;
     //获取邮件发送类
     @Autowired
     JavaMailSender javaMailSender;
     @Autowired
-    WeChatPayProperties weChatPayProperties;
+    TemplateEngine templateEngine;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -131,7 +135,14 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setAmount(nmnNmnOrderVo.getAmount());
         nmnNmnOrder.setCode(nmnNmnOrderVo.getCode());
         nmnNmnOrder.setOrderNote(nmnNmnOrderVo.getOrderNote());
-        sysNmnOrderMapper.insert(nmnNmnOrder);
+        int insert = sysNmnOrderMapper.insert(nmnNmnOrder);
+        if (insert > 0) {
+            mailVo.setTo(MANAGE_EMAIL);
+            mailVo.setSubject("有订单生成了，请到后台进行确认/An order has been generated, please go to the background to confirm");
+            mailVo.setSentDate(new Date());
+            mailVo.setText("订单编号：" + nmnNmnOrder.getOutTradeNo() + "。\n订单收货邮箱：" + nmnNmnOrder.getEmail()+"\n\n");
+            mailVo.sendEmail(javaMailSender);
+        }
     }
 
     @Override
@@ -309,8 +320,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
             boolean update = this.update(nmnNmnOrderLambdaUpdateWrapper);
             if(update){
                 NmnNmnOrder nmnNmnOrder = getNmnNmnOrder(map);
+                mailVo.setTo(nmnNmnOrder.getEmail());
                 mailVo.setSubject("发货通知");
-                mailVo.sendEmail(javaMailSender, nmnNmnOrder.getEmail(), EMAIL_MSG, new Date());
+                mailVo.setSentDate(new Date());
+                mailVo.setText(EMAIL_MSG + "\n商品名称：" + nmnNmnOrder.getNmnTitle() + "\n订单编号：" + nmnNmnOrder.getOutTradeNo() + "\n购买数量：" + nmnNmnOrder.getAmount() + "\n总金额：" + nmnNmnOrder.getTotalFee());
+                mailVo.sendEmail(javaMailSender);
                 return true;
             }else {
                 return false;
