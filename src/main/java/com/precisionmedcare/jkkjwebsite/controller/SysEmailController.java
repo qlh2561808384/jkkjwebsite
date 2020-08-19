@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,9 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 @Api(tags = "邮箱接口")
 @RestController
 @RequestMapping("email")
@@ -51,12 +55,13 @@ public class SysEmailController extends ApiController {
         String code = EmailCodeUtil.generateCode();
         mailVo.setTo(email);
         mailVo.setSubject("注册验证码/Register verification code");
-        mailVo.setSentDate(new Date());
-        mailVo.setText("您的注册验证码是" + code + "。有效期：" + EXPIRE_TIME + "s" + "\n" + "Your registration verification code is" + code + ".Validity period:" + EXPIRE_TIME + "s");
+//        mailVo.setText("您的注册验证码是" + code + "。有效期：" + EXPIRE_TIME + "s" + "\n" + "Your registration verification code is" + code + ".Validity period:" + EXPIRE_TIME + "s");
         Context context = new Context();
-        context.setVariable("code", code + "s");
-        context.setVariable("expire_time", EXPIRE_TIME);
-        mailVo.sendEmail(javaMailSender,templateEngine,context,"mail.html");
+        Map<String, Object> map = new HashMap<>();
+        map.put("验证码/code", code);
+        map.put("有效时长/expire_time", EXPIRE_TIME + "s");
+        context.setVariable("map", map);
+        mailVo.sendEmail(javaMailSender,templateEngine,context,"code.html");
         boolean flag = redisService.setEx(email, code, EXPIRE_TIME);
         if(flag){
             return success(true);

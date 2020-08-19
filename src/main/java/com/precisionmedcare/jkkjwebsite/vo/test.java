@@ -1,16 +1,30 @@
 package com.precisionmedcare.jkkjwebsite.vo;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
+
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 
 public class test {
     public static void main(String[] args) {
-        byte[] byteImg = getByteImg("http://p3.so.qhmsg.com/t014d3503dd2d67d728.jpg");
-        System.out.println(byteImg);
+//        byte[] byteImg = getByteImg("http://p3.so.qhmsg.com/t014d3503dd2d67d728.jpg");
+//        System.out.println(byteImg);
+        //当前时间
+        Date date = DateUtil.date();
+        String now = DateUtil.now();
+        String s = RandomUtil.randomString(18);
+        String format = DateUtil.format(date, DatePattern.PURE_DATETIME_PATTERN);
+        System.out.println(format + s);
     }
     /**
      * <h1> ClassName: ImgConverter </h1>

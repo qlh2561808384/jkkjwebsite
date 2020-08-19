@@ -33,7 +33,7 @@ public class MailVo {
     @ApiModelProperty(value = "邮件内容")
     private String text;
     @ApiModelProperty(value = "发送时间")
-    private Date sentDate;
+    private Date sentDate = new Date();
     @ApiModelProperty(value = "抄送")
     private String cc;
     @ApiModelProperty(value = "密送")

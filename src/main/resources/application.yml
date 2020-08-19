@@ -72,3 +72,9 @@ global:
       hotel_name: qlh
       check_in_time: 2020-10-20
       check_out_time: 2020-10-22
+#上传文件地址
+upload:
+  path: f:\\image
+#linux下面的
+#upload:
+#  path: /root/workspace/trinityscience/image

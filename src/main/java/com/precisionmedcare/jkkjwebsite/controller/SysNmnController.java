@@ -12,10 +12,18 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "商品接口")
 @RequestMapping("nmn")
@@ -24,6 +32,44 @@ public class SysNmnController extends ApiController {
 
     @Autowired
     SysNmnService sysNmnService;
+    @Value("${upload.path}")
+    private String uploadPath;
+    @RequestMapping(value = "image", method = RequestMethod.POST)
+    public R upload(HttpServletRequest request) {
+        String msg = "";
+        MultipartHttpServletRequest Murequest = (MultipartHttpServletRequest)request;
+        Map<String, MultipartFile> files = Murequest.getFileMap();//得到文件map对象
+        for(MultipartFile file :files.values()){
+            if (file.isEmpty()) {
+                // 设置错误状态码
+                msg = "failed,file not empty";
+                return failed(msg);
+            }
+            // 拿到文件名
+            String openfilename = file.getOriginalFilename();
+            String filename = openfilename.replace(" ", "_");
+            // 存放上传图片的文件夹
+            String fileDirPath = new String(uploadPath + File.separator);
+            File fileDir = new File(fileDirPath);
+            if(!fileDir.exists()){
+                // 递归生成文件夹
+                fileDir.mkdirs();
+            }
+            // 输出文件夹绝对路径  -- 这里的绝对路径是相当于当前项目的路径而不是“容器”路径
+//            System.out.println(fileDir.getAbsolutePath());
+            try {
+                // 构建真实的文件路径
+                File newFile = new File(fileDir.getAbsolutePath() + File.separator + filename);
+//                System.out.println(newFile.getAbsolutePath());
+                // 上传图片到 -》 “绝对路径”
+                file.transferTo(newFile);
+                msg = "http://pmdcare.cn/" + filename;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return success(msg);
+    }
 
     @ApiOperation("商品管理-新增and修改商品表")
     @ApiImplicitParams({@ApiImplicitParam(name = "nmnNmn", value = "商品信息实体类", dataType = "NmnNmn",paramType = "body")})

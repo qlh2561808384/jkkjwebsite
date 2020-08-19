@@ -1,6 +1,8 @@
 package com.precisionmedcare.jkkjwebsite.controller;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
@@ -197,8 +199,12 @@ public class SysOrderController extends ApiController {
      * @param request
      * @return
      */
-    public NmnNmnOrderVo saveNmnOrderVo(Map<String, Object> map, HttpServletRequest request, String OutTradeNo) {
-        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName,code,orderNote;
+    public NmnNmnOrderVo saveNmnOrderVo(Map<String, Object> map, HttpServletRequest request) {
+        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName,code,orderNote,userId;
+        //用户id=0
+        String ymdhms = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
+        String randomString ;
+        //用户id!=0
         NmnNmnOrderVo nmnNmnOrderVo = new NmnNmnOrderVo();
         userAddress = map.get("userAddress").toString();
         userIdCard = map.get("userIdCard").toString();
@@ -209,12 +215,22 @@ public class SysOrderController extends ApiController {
         payType = map.get("payType").toString();
         code = map.get("code").toString();
         orderNote = map.get("orderNote").toString();
+        userId = map.get("userId").toString();
+        if ("".equals(userId)) {
+            nmnNmnOrderVo.setUserId(0);
+            randomString = RandomUtil.randomString(18);
+            nmnNmnOrderVo.setOutTradeNo(ymdhms + randomString);
+        } else {
+            nmnNmnOrderVo.setUserId(Long.parseLong(userId));
+            int length = userId.length();
+            randomString = RandomUtil.randomString(18 - length);
+            nmnNmnOrderVo.setOutTradeNo(ymdhms + randomString);
+        }
         nmnNmnOrderVo.setIp(IpUtils.getIpAddr(request));
         nmnNmnOrderVo.setPhone(userPhone);
         nmnNmnOrderVo.setEmail(email);
         nmnNmnOrderVo.setIdcard(userIdCard);
         nmnNmnOrderVo.setAddress(userAddress);
-        nmnNmnOrderVo.setOutTradeNo(OutTradeNo);
         nmnNmnOrderVo.setPayType(payType);
 //        nmnNmnOrderVo.setGeneralTitle(generalTitle);
         nmnNmnOrderVo.setTotalAmount(Double.parseDouble(totalFee));
@@ -248,22 +264,16 @@ public class SysOrderController extends ApiController {
 
 
     private R unifiedOperateMap(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String orderTime, userId, payType, codeUrl = "";
+        String orderTime, payType, codeUrl = "";
         List productList = new ArrayList();
-        String OutTradeNo = CommonUtils.generateUUID();
+//        String OutTradeNo = CommonUtils.generateUUID();
         if (!map.isEmpty()) {
             orderTime = map.get("orderTime").toString();
-            userId = map.get("userId").toString();
             payType = map.get("payType").toString();
             productList = (List) map.get("product");
 
             //1、根据用户id和商品id生成订单
-            NmnNmnOrderVo nmnNmnOrderVo = saveNmnOrderVo(map, request, OutTradeNo);
-            if ("".equals(userId)) {
-                nmnNmnOrderVo.setUserId(0);
-            } else {
-                nmnNmnOrderVo.setUserId(Long.parseLong(userId));
-            }
+            NmnNmnOrderVo nmnNmnOrderVo = saveNmnOrderVo(map, request);
             //保存订单
             saveNmnOrder(productList, nmnNmnOrderVo);
             //登陆后支付 微信支付 保存订单同时返回codeUrl
@@ -272,7 +282,7 @@ public class SysOrderController extends ApiController {
             }else {
                 codeUrl = sysNmnOrderService.aliPay(nmnNmnOrderVo);
             }*/
-            return success(OutTradeNo);
+            return success(nmnNmnOrderVo.getOutTradeNo());
         }else {
             return success(false);
         }

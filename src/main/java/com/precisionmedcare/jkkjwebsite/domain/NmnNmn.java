@@ -14,7 +14,7 @@ public class NmnNmn implements Serializable {
   private String title;
   private String summary;
   private Long viewNum;
-  private long price;
+  private double price;
   private String createTime;
   private Long online;
   private Double score;

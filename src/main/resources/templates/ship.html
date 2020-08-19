@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TRINTY</title>
+</head>
+<body>
+<div class="container">
+    <table class="hovertable">
+        <thead>
+            <tr>
+                <th colspan="4">中文/English</th>
+            </tr>
+            <tr>
+                <th colspan="4">发货通知/Shipping notice</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th th:each="body : ${map}" th:text="${body.key}"></th>
+            </tr>
+            <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+                <td th:each="body : ${map}" th:text="${body.value}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<style type="text/css">
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    .hovertable {
+        font-family: verdana, arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #999999;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+    .hovertable th {
+        background-color: #c3dde0;
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+        min-width: 300px;
+    }
+
+    .hovertable tr {
+        background-color: #d4e3e5;
+    }
+
+    .hovertable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+        text-align: center;
+    }
+
+    .hovertable thead th {
+        color: blue;
+    }
+
+    .hovertable tbody th {
+        color: goldenrod;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+</body>
+</html>

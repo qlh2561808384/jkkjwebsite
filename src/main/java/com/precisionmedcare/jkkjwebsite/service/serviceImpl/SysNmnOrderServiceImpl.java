@@ -31,7 +31,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -139,9 +141,17 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         if (insert > 0) {
             mailVo.setTo(MANAGE_EMAIL);
             mailVo.setSubject("有订单生成了，请到后台进行确认/An order has been generated, please go to the background to confirm");
-            mailVo.setSentDate(new Date());
-            mailVo.setText("订单编号：" + nmnNmnOrder.getOutTradeNo() + "。\n订单收货邮箱：" + nmnNmnOrder.getEmail()+"\n\n");
-            mailVo.sendEmail(javaMailSender);
+//            mailVo.setText("订单编号：" + nmnNmnOrder.getOutTradeNo() + "。\n订单收货邮箱：" + nmnNmnOrder.getEmail()+"\n\n");
+            Context context = new Context();
+            Map<String, Object> map = new HashMap<>();
+            map.put("订单编号/Order number", nmnNmnOrder.getOutTradeNo());
+            map.put("订单收货邮箱/Order receiving mailbox", nmnNmnOrder.getEmail());
+            context.setVariable("map", map);
+            try {
+                mailVo.sendEmail(javaMailSender,templateEngine,context,"order.html");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -321,10 +331,20 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
             if(update){
                 NmnNmnOrder nmnNmnOrder = getNmnNmnOrder(map);
                 mailVo.setTo(nmnNmnOrder.getEmail());
-                mailVo.setSubject("发货通知");
-                mailVo.setSentDate(new Date());
-                mailVo.setText(EMAIL_MSG + "\n商品名称：" + nmnNmnOrder.getNmnTitle() + "\n订单编号：" + nmnNmnOrder.getOutTradeNo() + "\n购买数量：" + nmnNmnOrder.getAmount() + "\n总金额：" + nmnNmnOrder.getTotalFee());
-                mailVo.sendEmail(javaMailSender);
+                mailVo.setSubject("发货通知/Shipping notice");
+//                mailVo.setText(EMAIL_MSG + "\n商品名称：" + nmnNmnOrder.getNmnTitle() + "\n订单编号：" + nmnNmnOrder.getOutTradeNo() + "\n购买数量：" + nmnNmnOrder.getAmount() + "\n总金额：" + nmnNmnOrder.getTotalFee());
+                Context context = new Context();
+                Map<String, Object> hashMap = new HashMap<>();
+                hashMap.put("商品名称/product name", nmnNmnOrder.getNmnTitle());
+                hashMap.put("订单编号/Order number",  nmnNmnOrder.getOutTradeNo());
+                hashMap.put("购买数量/Purchase quantity", nmnNmnOrder.getAmount());
+                hashMap.put("总金额/total amount", nmnNmnOrder.getTotalFee());
+                context.setVariable("map", hashMap);
+                try {
+                    mailVo.sendEmail(javaMailSender,templateEngine,context,"ship.html");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }else {
                 return false;
