@@ -13,14 +13,19 @@ import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
+import com.precisionmedcare.jkkjwebsite.vo.MailVo;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,11 +43,19 @@ public class SysOrderController extends ApiController {
 
     @Autowired
     SysNmnOrderService sysNmnOrderService;
-
+    //获取邮件发送类
+    @Autowired
+    JavaMailSender javaMailSender;
+    @Autowired
+    TemplateEngine templateEngine;
+    @Autowired
+    MailVo mailVo;
     @Autowired
     private WeChatConfig weChatConfig;
     @Autowired
     WeChatPayProperties weChatPayProperties;
+    private static final String EMAIL_MSG = "您购买的商品已发货/The item you purchased has been shipped";
+    private static final String MANAGE_EMAIL = "2561808384@qq.com";
 
     @PostMapping("WxPay")
     @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "微信支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
@@ -259,6 +272,23 @@ public class SysOrderController extends ApiController {
             nmnNmnOrderVo.setNmnTitle(nmnName);
             nmnNmnOrderVo.setAmount(nmnNumber);
             sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
+        }
+        sendEmailToManage(nmnNmnOrderVo.getOutTradeNo(), nmnNmnOrderVo.getEmail());
+    }
+
+    private void sendEmailToManage(String outTradeNo, String email) {
+        mailVo.setTo(MANAGE_EMAIL);
+        mailVo.setSubject("有订单生成了，请到后台进行确认/An order has been generated, please go to the background to confirm");
+//            mailVo.setText("订单编号：" + nmnNmnOrder.getOutTradeNo() + "。\n订单收货邮箱：" + nmnNmnOrder.getEmail()+"\n\n");
+        Context context = new Context();
+        Map<String, Object> map = new HashMap<>();
+        map.put("订单编号/Order number", outTradeNo);
+        map.put("订单收货邮箱/Order receiving mailbox", email);
+        context.setVariable("map", map);
+        try {
+            mailVo.sendEmail(javaMailSender, templateEngine, context, "order.html");
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 

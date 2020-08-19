@@ -44,8 +44,6 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     private static final long ALL_STATUS_DISABLE = 1;
     private static final String WX_PAY_TYPE = "weChatPay";
     private static final String ALI_PAY_TYPE = "aliPay";
-    private static final String EMAIL_MSG = "您购买的商品已发货/The item you purchased has been shipped";
-    private static final String MANAGE_EMAIL = "2561808384@qq.com";
 
     private static final String UNIFIEDORDERURL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
     private static final String GETSIGNKEYURL = "https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey";
@@ -137,22 +135,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setAmount(nmnNmnOrderVo.getAmount());
         nmnNmnOrder.setCode(nmnNmnOrderVo.getCode());
         nmnNmnOrder.setOrderNote(nmnNmnOrderVo.getOrderNote());
-        int insert = sysNmnOrderMapper.insert(nmnNmnOrder);
-        if (insert > 0) {
-            mailVo.setTo(MANAGE_EMAIL);
-            mailVo.setSubject("有订单生成了，请到后台进行确认/An order has been generated, please go to the background to confirm");
-//            mailVo.setText("订单编号：" + nmnNmnOrder.getOutTradeNo() + "。\n订单收货邮箱：" + nmnNmnOrder.getEmail()+"\n\n");
-            Context context = new Context();
-            Map<String, Object> map = new HashMap<>();
-            map.put("订单编号/Order number", nmnNmnOrder.getOutTradeNo());
-            map.put("订单收货邮箱/Order receiving mailbox", nmnNmnOrder.getEmail());
-            context.setVariable("map", map);
-            try {
-                mailVo.sendEmail(javaMailSender,templateEngine,context,"order.html");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
-        }
+        sysNmnOrderMapper.insert(nmnNmnOrder);
     }
 
     @Override
