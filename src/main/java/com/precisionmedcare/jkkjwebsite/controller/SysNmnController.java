@@ -1,5 +1,6 @@
 package com.precisionmedcare.jkkjwebsite.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
@@ -46,8 +47,16 @@ public class SysNmnController extends ApiController {
                 return failed(msg);
             }
             // 拿到文件名
+            String newName = null;
             String openfilename = file.getOriginalFilename();
             String filename = openfilename.replace(" ", "_");
+            int one = filename.lastIndexOf(".");
+            if (-1 == one) {
+                msg = "failed,File format error";
+                return failed(msg);
+            }else {
+                newName = filename.replace(filename.substring(0, one), RandomUtil.randomString(10));
+            }
             // 存放上传图片的文件夹
             String fileDirPath = new String(uploadPath + File.separator);
             File fileDir = new File(fileDirPath);
@@ -59,11 +68,11 @@ public class SysNmnController extends ApiController {
 //            System.out.println(fileDir.getAbsolutePath());
             try {
                 // 构建真实的文件路径
-                File newFile = new File(fileDir.getAbsolutePath() + File.separator + filename);
+                File newFile = new File(fileDir.getAbsolutePath() + File.separator + newName);
 //                System.out.println(newFile.getAbsolutePath());
                 // 上传图片到 -》 “绝对路径”
                 file.transferTo(newFile);
-                msg = "http://pmdcare.cn/" + filename;
+                msg = "http://pmdcare.cn/" + newName;
             } catch (IOException e) {
                 e.printStackTrace();
             }
