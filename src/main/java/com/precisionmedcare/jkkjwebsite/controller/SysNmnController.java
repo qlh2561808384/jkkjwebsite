@@ -72,7 +72,7 @@ public class SysNmnController extends ApiController {
 //                System.out.println(newFile.getAbsolutePath());
                 // 上传图片到 -》 “绝对路径”
                 file.transferTo(newFile);
-                msg = "http://pmdcare.cn/" + newName;
+                msg = "http://pmdcare.cn:82/" + newName;
             } catch (IOException e) {
                 e.printStackTrace();
             }
