@@ -24,4 +24,12 @@ public class EmailCodeUtil {
         }
         return String.valueOf(chars);
     }
+    // 获取6位随机验证码
+    public static String getRandom() {
+        StringBuilder num = new StringBuilder();
+        for (int i = 0 ; i < 6 ; i ++) {
+            num.append((int) Math.floor(Math.random() * 9 + 1));
+        }
+        return num.toString();
+    }
 }

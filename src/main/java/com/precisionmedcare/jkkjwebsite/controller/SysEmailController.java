@@ -52,7 +52,7 @@ public class SysEmailController extends ApiController {
     @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "获取验证码邮箱", dataType = "String")})
     @GetMapping("getEmailCode")
     public R getEmailCode(@RequestParam("email") String email) throws MessagingException {
-        String code = EmailCodeUtil.generateCode();
+        String code = EmailCodeUtil.getRandom();
         mailVo.setTo(email);
         mailVo.setSubject("注册验证码/Register verification code");
 //        mailVo.setText("您的注册验证码是" + code + "。有效期：" + EXPIRE_TIME + "s" + "\n" + "Your registration verification code is" + code + ".Validity period:" + EXPIRE_TIME + "s");
