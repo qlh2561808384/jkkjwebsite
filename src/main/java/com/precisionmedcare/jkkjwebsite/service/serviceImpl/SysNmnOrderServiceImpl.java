@@ -101,6 +101,9 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     public void saveNmnOrder(NmnNmnOrderVo nmnNmnOrderVo) {
         //1、查找商品信息
         NmnNmn nmnNmn = sysNmnMapper.selectById(nmnNmnOrderVo.getNmnId());
+        Long viewNum = nmnNmn.getViewNum();
+        nmnNmn.setViewNum(viewNum + Long.parseLong(nmnNmnOrderVo.getAmount()));
+        sysNmnMapper.updateById(nmnNmn);
         NmnUser nmnUser = null;
         //2、查找用户信息
         if (nmnNmnOrderVo.getUserId() != 0) {
