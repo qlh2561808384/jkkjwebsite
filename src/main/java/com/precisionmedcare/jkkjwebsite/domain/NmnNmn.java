@@ -23,5 +23,6 @@ public class NmnNmn implements Serializable {
   private String detailedDrawing;
   private double quarterlyDiscount;
   private double annualDiscount;
-
+  private String titleCn;
+  private String summaryCn;
 }

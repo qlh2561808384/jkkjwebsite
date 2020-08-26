@@ -45,6 +45,8 @@ create table nmn_nmn
     detailed_drawing varchar(250) null comment '商品详细图',
     quarterly_discount double(3,3) null comment '季度折扣',
     annual_discount double(3,3) null comment '年度折扣',
+    title_cn varchar(524) null comment '中文商品标题',
+    summary_cn varchar(1026) null comment '中文商品描述',
     constraint nmn_nmn_pk
         primary key (id)
 )
@@ -92,3 +94,8 @@ create table nmn_nmn_order
         primary key (id)
 )
     comment '商品订单表';
+alter table nmn_nmn
+    add title_cn varchar(524) null comment '中文商品标题';
+
+alter table nmn_nmn
+    add summary_cn varchar(1026) null comment '中文商品描述';

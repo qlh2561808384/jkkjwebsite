@@ -82,7 +82,9 @@ public class BackStageApiProvider {
                 "       nmn.view_num    viewNum,\n" +
                 "       nmn.detailed_drawing    detailedDrawing,\n" +
                 "       nmn.quarterly_discount    quarterlyDiscount,\n" +
-                "       nmn.annual_discount   annualDiscount\n" +
+                "       nmn.annual_discount   annualDiscount,\n" +
+                "       nmn.title_cn   titleCn,\n" +
+                "       nmn.summary_cn   summaryCn\n" +
                 "from nmn_nmn nmn\n" +
                 "where status = 0");
         if(!"".equals(keyword)){
@@ -121,7 +123,9 @@ public class BackStageApiProvider {
                 "       nmn.address,\n" +
                 "       nmn.receiver_name receiverName,\n" +
                 "       nmn.amount amount,\n" +
-                "       nmnnmn.summary\n" +
+                "       nmnnmn.summary,\n" +
+                "       nmnnmn.title_cn titleCn,\n" +
+                "       nmnnmn.summary_cn summaryCn\n" +
                 "from nmn_nmn_order nmn\n" +
                 "         left join nmn_user user on nmn.user_id = user.id\n" +
                 "         left join nmn_nmn nmnnmn on nmn.nmn_id = nmnnmn.id\n" +
