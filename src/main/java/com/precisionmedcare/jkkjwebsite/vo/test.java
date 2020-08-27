@@ -10,6 +10,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -20,11 +21,21 @@ public class test {
 //        byte[] byteImg = getByteImg("http://p3.so.qhmsg.com/t014d3503dd2d67d728.jpg");
 //        System.out.println(byteImg);
         //当前时间
-        Date date = DateUtil.date();
+       /* Date date = DateUtil.date();
         String now = DateUtil.now();
         String s = RandomUtil.randomString(18);
         String format = DateUtil.format(date, DatePattern.PURE_DATETIME_PATTERN);
-        System.out.println(format + s);
+        System.out.println(format + s);*/
+        String str = "http://pmdcare.cn:82/1.jpg";
+        String substring = "";
+        int i1 = str.lastIndexOf("/");
+        if (-1 == i1) {
+            System.out.println("没有找到/");
+        }else {
+            substring = str.substring(i1 + 1);
+        }
+        System.out.println(i1);
+        System.out.println(substring);
     }
     /**
      * <h1> ClassName: ImgConverter </h1>

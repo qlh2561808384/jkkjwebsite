@@ -35,12 +35,22 @@ public class SysNmnController extends ApiController {
     SysNmnService sysNmnService;
     @Value("${upload.path}")
     private String uploadPath;
+
     @RequestMapping(value = "image", method = RequestMethod.POST)
-    public R upload(HttpServletRequest request) {
+    public R upload(HttpServletRequest request, @RequestParam Map<String, String> map) {
         String msg = "";
-        MultipartHttpServletRequest Murequest = (MultipartHttpServletRequest)request;
+        MultipartHttpServletRequest Murequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> files = Murequest.getFileMap();//得到文件map对象
-        for(MultipartFile file :files.values()){
+        if (!map.isEmpty()) {
+            String imgName = map.get("imgName");
+            int i = imgName.lastIndexOf("/");
+            String substring = imgName.substring(i + 1);
+            File file = new File(uploadPath + File.separator + substring);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        for (MultipartFile file : files.values()) {
             if (file.isEmpty()) {
                 // 设置错误状态码
                 msg = "failed,file not empty";
@@ -54,13 +64,13 @@ public class SysNmnController extends ApiController {
             if (-1 == one) {
                 msg = "failed,File format error";
                 return failed(msg);
-            }else {
+            } else {
                 newName = filename.replace(filename.substring(0, one), RandomUtil.randomString(10));
             }
             // 存放上传图片的文件夹
             String fileDirPath = new String(uploadPath + File.separator);
             File fileDir = new File(fileDirPath);
-            if(!fileDir.exists()){
+            if (!fileDir.exists()) {
                 // 递归生成文件夹
                 fileDir.mkdirs();
             }
