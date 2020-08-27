@@ -55,7 +55,7 @@ public class SysOrderController extends ApiController {
     @Autowired
     WeChatPayProperties weChatPayProperties;
     private static final String EMAIL_MSG = "您购买的商品已发货/The item you purchased has been shipped";
-    private static final String MANAGE_EMAIL = "2561808384@qq.com";
+    private static final String MANAGE_EMAIL = "trhealth12@gmail.com";
 
     @PostMapping("WxPay")
     @ApiImplicitParams({@ApiImplicitParam(name = "map", value = "微信支付订单信息", dataType = "Map<String, Object>",paramType = "body")})
