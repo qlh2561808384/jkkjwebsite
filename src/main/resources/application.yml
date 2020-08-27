@@ -24,6 +24,10 @@ spring:
         smtp:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
 #端口号配置
 server:
   port: 8888
