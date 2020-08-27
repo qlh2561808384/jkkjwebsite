@@ -179,7 +179,9 @@ public class BackStageApiProvider {
                 "       nmn_nmn_order.address,\n" +
                 "       nmn_nmn_order.receiver_name,\n" +
                 "       nmn_nmn_order.amount,\n" +
-                "       nmn_nmn.summary\n" +
+                "       nmn_nmn.summary,\n" +
+                "       nmn_nmn.title_cn titleCn,\n" +
+                "       nmn_nmn.summary_cn summaryCn\n" +
                 "FROM nmn_nmn_order\n" +
                 "         left join nmn_nmn on nmn_nmn_order.nmn_id = nmn_nmn.id\n" +
                 "WHERE nmn_nmn_order.del = 0 " +
