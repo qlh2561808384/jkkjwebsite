@@ -122,6 +122,7 @@ public class BackStageApiProvider {
                 "       nmn.email        receiveEmail,\n" +
                 "       nmn.idcard,\n" +
                 "       nmn.address,\n" +
+                "       nmn.code,\n" +
                 "       nmn.receiver_name receiverName,\n" +
                 "       nmn.amount amount,\n" +
                 "       nmnnmn.summary,\n" +
@@ -180,6 +181,7 @@ public class BackStageApiProvider {
                 "       nmn_nmn_order.address,\n" +
                 "       nmn_nmn_order.receiver_name,\n" +
                 "       nmn_nmn_order.amount,\n" +
+                "       nmn_nmn_order.code,\n" +
                 "       nmn_nmn.summary,\n" +
                 "       nmn_nmn.title_cn titleCn,\n" +
                 "       nmn_nmn.summary_cn summaryCn\n" +
