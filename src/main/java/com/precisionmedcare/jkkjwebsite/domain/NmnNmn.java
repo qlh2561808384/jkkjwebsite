@@ -25,4 +25,5 @@ public class NmnNmn implements Serializable {
   private double annualDiscount;
   private String titleCn;
   private String summaryCn;
+  private long amountOfGoods;
 }

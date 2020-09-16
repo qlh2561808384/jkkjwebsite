@@ -84,7 +84,8 @@ public class BackStageApiProvider {
                 "       nmn.quarterly_discount    quarterlyDiscount,\n" +
                 "       nmn.annual_discount   annualDiscount,\n" +
                 "       nmn.title_cn   titleCn,\n" +
-                "       nmn.summary_cn   summaryCn\n" +
+                "       nmn.summary_cn   summaryCn,\n" +
+                "       nmn.amount_of_goods   amountOfGoods\n" +
                 "from nmn_nmn nmn\n" +
                 "where status = 0");
         if(!"".equals(keyword)){

@@ -14,9 +14,11 @@ import com.precisionmedcare.jkkjwebsite.config.AliPayConfig;
 import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmn;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
+import com.precisionmedcare.jkkjwebsite.domain.NmnPromoCode;
 import com.precisionmedcare.jkkjwebsite.domain.NmnUser;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnOrderMapper;
+import com.precisionmedcare.jkkjwebsite.mapper.SysNmnPromoCodeMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysUserMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
 import com.precisionmedcare.jkkjwebsite.vo.GlobalAlipayVo;
@@ -55,6 +57,8 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     SysNmnOrderMapper sysNmnOrderMapper;
     @Autowired
     SysUserMapper sysUserMapper;
+    @Autowired
+    SysNmnPromoCodeMapper sysNmnPromoCodeMapper;
     @Autowired
     private WeChatConfig weChatConfig;
     @Autowired
@@ -115,7 +119,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setOutTradeNo(nmnNmnOrderVo.getOutTradeNo());
         nmnNmnOrder.setState(ALL_STATUS);
         nmnNmnOrder.setCreateTime(DateUtil.now());
-        nmnNmnOrder.setTotalFee(nmnNmnOrderVo.getTotalFee());
+        nmnNmnOrder.setTotalFee(nmnNmnOrderVo.getTotalAmount());
         nmnNmnOrder.setNmnId(nmnNmn.getId());
         nmnNmnOrder.setNmnTitle(nmnNmn.getTitle());
         nmnNmnOrder.setNmnImg(nmnNmn.getCoverImg());
@@ -139,6 +143,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setCode(nmnNmnOrderVo.getCode());
         nmnNmnOrder.setOrderNote(nmnNmnOrderVo.getOrderNote());
         sysNmnOrderMapper.insert(nmnNmnOrder);
+
     }
 
     @Override

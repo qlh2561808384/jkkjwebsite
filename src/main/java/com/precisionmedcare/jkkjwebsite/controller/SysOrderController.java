@@ -11,7 +11,9 @@ import com.github.pagehelper.PageInfo;
 import com.precisionmedcare.jkkjwebsite.components.wx.*;
 import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
+import com.precisionmedcare.jkkjwebsite.domain.NmnPromoCode;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
+import com.precisionmedcare.jkkjwebsite.service.SysNmnPromoCodeService;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnService;
 import com.precisionmedcare.jkkjwebsite.vo.MailVo;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
@@ -43,6 +45,9 @@ public class SysOrderController extends ApiController {
 
     @Autowired
     SysNmnOrderService sysNmnOrderService;
+
+    @Autowired
+    SysNmnPromoCodeService sysNmnPromoCodeService;
     //获取邮件发送类
     @Autowired
     JavaMailSender javaMailSender;
@@ -71,6 +76,15 @@ public class SysOrderController extends ApiController {
         return success(unifiedOperateMap(map, request, response));
     }
 
+    @GetMapping("checkPromoCode/{code}")
+    public R CheckPromoCode (@PathVariable("code") String code){
+        NmnPromoCode nmnPromoCode = sysNmnPromoCodeService.checkCode(code);
+        if (nmnPromoCode != null) {
+            return success(nmnPromoCode);
+        }else {
+            return success(false);
+        }
+    }
     /**
      * 微信支付回调
      * 该链接是通过【统一下单API】中提交的参数notify_url设置，如果链接无法访问，商户将无法接收到微信通知。
@@ -213,7 +227,8 @@ public class SysOrderController extends ApiController {
      * @return
      */
     public NmnNmnOrderVo saveNmnOrderVo(Map<String, Object> map, HttpServletRequest request) {
-        String userAddress, userIdCard, userPhone, email, totalFee, payType,receiverName,code,orderNote,userId;
+        String userAddress, userIdCard, userPhone, email, totalFee, payType, receiverName, code, orderNote, userId, promoCodeId;
+        int usageCount;
         //用户id=0
         String ymdhms = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
         String randomString ;
@@ -226,7 +241,9 @@ public class SysOrderController extends ApiController {
         totalFee = map.get("totalFee").toString();
         receiverName = map.get("userName").toString();
         payType = map.get("payType").toString();
-        code = map.get("code").toString();
+        code = map.get("code") == null ? "" : map.get("code").toString();
+        usageCount = (int) map.get("usageCount");
+        promoCodeId = map.get("promoCodeId").toString();
         orderNote = map.get("orderNote").toString();
         userId = map.get("userId").toString();
         if ("".equals(userId)) {
@@ -249,6 +266,8 @@ public class SysOrderController extends ApiController {
         nmnNmnOrderVo.setTotalAmount(Double.parseDouble(totalFee));
         nmnNmnOrderVo.setReceiverName(receiverName);
         nmnNmnOrderVo.setCode(code);
+        nmnNmnOrderVo.setUsageCount(usageCount);
+        nmnNmnOrderVo.setPromoCodeId(Integer.parseInt(promoCodeId));
         nmnNmnOrderVo.setOrderNote(orderNote);
         return nmnNmnOrderVo;
     }
@@ -272,6 +291,13 @@ public class SysOrderController extends ApiController {
             nmnNmnOrderVo.setNmnTitle(nmnName);
             nmnNmnOrderVo.setAmount(nmnNumber);
             sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
+        }
+        //更新优惠码使用次数
+        int totalNumber = 0;
+        if (nmnNmnOrderVo.getPromoCodeId() != 0) {
+            NmnPromoCode nmnPromoCode = sysNmnPromoCodeService.selectPromoCodeById(nmnNmnOrderVo.getPromoCodeId());
+            totalNumber = nmnNmnOrderVo.getUsageCount() + nmnPromoCode.getUsageCount();
+            sysNmnPromoCodeService.updateUsageCountByPromoCodeId(nmnNmnOrderVo.getPromoCodeId(), String.valueOf(totalNumber));
         }
         sendEmailToManage(nmnNmnOrderVo.getOutTradeNo(), nmnNmnOrderVo.getEmail());
     }

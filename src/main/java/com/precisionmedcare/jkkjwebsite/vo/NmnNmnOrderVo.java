@@ -10,6 +10,10 @@ public class NmnNmnOrderVo extends NmnNmnOrder {
 
     private String payType;
 
+    private Integer usageCount;
+
+    private Integer promoCodeId;
+
     public String getPayType() {
         return payType;
     }
@@ -32,6 +36,22 @@ public class NmnNmnOrderVo extends NmnNmnOrder {
 
     public void setGeneralTitle(String generalTitle) {
         this.generalTitle = generalTitle;
+    }
+
+    public Integer getUsageCount() {
+        return usageCount;
+    }
+
+    public void setUsageCount(Integer usageCount) {
+        this.usageCount = usageCount;
+    }
+
+    public Integer getPromoCodeId() {
+        return promoCodeId;
+    }
+
+    public void setPromoCodeId(Integer promoCodeId) {
+        this.promoCodeId = promoCodeId;
     }
 
 }

@@ -47,6 +47,7 @@ create table nmn_nmn
     annual_discount double(3,3) null comment '年度折扣',
     title_cn varchar(524) null comment '中文商品标题',
     summary_cn varchar(1026) null comment '中文商品描述',
+    amount_of_goods varchar(50) null comment '商品数量',
     constraint nmn_nmn_pk
         primary key (id)
 )
@@ -94,8 +95,16 @@ create table nmn_nmn_order
         primary key (id)
 )
     comment '商品订单表';
-alter table nmn_nmn
-    add title_cn varchar(524) null comment '中文商品标题';
 
-alter table nmn_nmn
-    add summary_cn varchar(1026) null comment '中文商品描述';
+create table `nmn_promo_code`
+(
+    id int auto_increment,
+    promo_code varchar(100) null comment '优惠码',
+    usage_count int null comment '优惠码使用次数',
+    discounted_price double(11,2) null comment '优惠金额  单位：美金',
+    state tinyint default 0 null comment '优惠码是否可用：0可用，1不可用',
+    constraint `nmn_promo _code_pk`
+        primary key (id)
+)
+    comment '商品优惠码';
+
