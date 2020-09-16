@@ -116,7 +116,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         nmnNmnOrder.setOutTradeNo(nmnNmnOrderVo.getOutTradeNo());
         nmnNmnOrder.setState(ALL_STATUS);
         nmnNmnOrder.setCreateTime(DateUtil.now());
-        nmnNmnOrder.setTotalFee(nmnNmnOrderVo.getTotalAmount());
+        nmnNmnOrder.setTotalFee(nmnNmnOrderVo.getTotalFee());
         nmnNmnOrder.setNmnId(nmnNmn.getId());
         nmnNmnOrder.setNmnTitle(nmnNmn.getTitle());
         nmnNmnOrder.setNmnImg(nmnNmn.getCoverImg());
