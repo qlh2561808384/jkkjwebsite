@@ -12,15 +12,18 @@ import com.precisionmedcare.jkkjwebsite.config.AliPayConfig;
 import com.precisionmedcare.jkkjwebsite.config.WeChatConfig;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmn;
 import com.precisionmedcare.jkkjwebsite.domain.NmnNmnOrder;
+import com.precisionmedcare.jkkjwebsite.domain.NmnPromoCode;
 import com.precisionmedcare.jkkjwebsite.domain.NmnUser;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnOrderMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysNmnPromoCodeMapper;
 import com.precisionmedcare.jkkjwebsite.mapper.SysUserMapper;
 import com.precisionmedcare.jkkjwebsite.service.SysNmnOrderService;
+import com.precisionmedcare.jkkjwebsite.service.SysNmnPromoCodeService;
 import com.precisionmedcare.jkkjwebsite.vo.GlobalAlipayVo;
 import com.precisionmedcare.jkkjwebsite.vo.MailVo;
 import com.precisionmedcare.jkkjwebsite.vo.NmnNmnOrderVo;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +59,8 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
     SysUserMapper sysUserMapper;
     @Autowired
     SysNmnPromoCodeMapper sysNmnPromoCodeMapper;
+    @Autowired
+    SysNmnPromoCodeService sysNmnPromoCodeService;
     @Autowired
     private WeChatConfig weChatConfig;
     @Autowired
@@ -318,6 +323,7 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
             boolean update = this.update(nmnNmnOrderLambdaUpdateWrapper);
             if(update){
                 NmnNmnOrder nmnNmnOrder = getNmnNmnOrder(map);
+                updateNmnPromoCode(nmnNmnOrder);
                 mailVo.setTo(nmnNmnOrder.getEmail());
                 mailVo.setSubject("发货通知/Shipping notice");
 //                mailVo.setText(EMAIL_MSG + "\n商品名称：" + nmnNmnOrder.getNmnTitle() + "\n订单编号：" + nmnNmnOrder.getOutTradeNo() + "\n购买数量：" + nmnNmnOrder.getAmount() + "\n总金额：" + nmnNmnOrder.getTotalFee());
@@ -341,6 +347,18 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         return false;
     }
 
+    private void updateNmnPromoCode(NmnNmnOrder nmnNmnOrder) {
+        //更新优惠码使用次数
+        int totalNumber;
+        String code = nmnNmnOrder.getCode();
+        long nmnId = nmnNmnOrder.getNmnId();
+        NmnNmn nmnNmn = sysNmnMapper.selectById(nmnId);
+
+        NmnPromoCode nmnPromoCode = sysNmnPromoCodeService.checkCode(code);
+        totalNumber = nmnPromoCode.getUsageCount() + (Integer.parseInt(String.valueOf(nmnNmn.getAmountOfGoods())) * Integer.parseInt(nmnNmnOrder.getAmount()));
+        sysNmnPromoCodeService.updateUsageCountByPromoCodeId(nmnPromoCode.getId(), String.valueOf(totalNumber));
+    }
+
     private NmnNmnOrder getNmnNmnOrder(Map<String, Object> map) {
         LambdaQueryWrapper<NmnNmnOrder> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(NmnNmnOrder::getId, map.get("nmnOrderId"));
@@ -361,5 +379,11 @@ public class SysNmnOrderServiceImpl extends ServiceImpl<SysNmnOrderMapper, NmnNm
         }else{
             return false;
         }
+    }
+
+    @Override
+    public boolean deleteOrderById(Integer[] orderId) {
+        int deleteNumber = sysNmnOrderMapper.deleteBatchIds(Arrays.asList(orderId));
+        return deleteNumber > 0;
     }
 }

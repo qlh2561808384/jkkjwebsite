@@ -292,13 +292,13 @@ public class SysOrderController extends ApiController {
             nmnNmnOrderVo.setAmount(nmnNumber);
             sysNmnOrderService.saveNmnOrder(nmnNmnOrderVo);
         }
-        //更新优惠码使用次数
+       /* //更新优惠码使用次数
         int totalNumber = 0;
         if (nmnNmnOrderVo.getPromoCodeId() != 0) {
             NmnPromoCode nmnPromoCode = sysNmnPromoCodeService.selectPromoCodeById(nmnNmnOrderVo.getPromoCodeId());
             totalNumber = nmnNmnOrderVo.getUsageCount() + nmnPromoCode.getUsageCount();
             sysNmnPromoCodeService.updateUsageCountByPromoCodeId(nmnNmnOrderVo.getPromoCodeId(), String.valueOf(totalNumber));
-        }
+        }*/
         sendEmailToManage(nmnNmnOrderVo.getOutTradeNo(), nmnNmnOrderVo.getEmail());
     }
 
@@ -381,4 +381,9 @@ public class SysOrderController extends ApiController {
         return success(sysNmnOrderService.checkBuy(map));
     }
 
+    @ApiOperation(value = "订单管理-删除功能")
+    @PostMapping("deleteOrderById")
+    public R deleteOrderById(@RequestBody Integer[] orderId) {
+        return success(sysNmnOrderService.deleteOrderById(orderId));
+    }
 }
